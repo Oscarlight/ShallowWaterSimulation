@@ -5,6 +5,7 @@
 #include <math.h>
 #include <assert.h>
 #include <stdbool.h>
+#include <stdio.h>
 #ifndef RESTRICT
 #define restrict __restrict__
 #endif /* RESTRICT */
