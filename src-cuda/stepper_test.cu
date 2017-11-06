@@ -77,7 +77,7 @@ int main(int argc, char** argv){
     // print_array(g, N);
     // 
     float *dev_u, *dev_v, *dev_f, *dev_g, *dev_scratch;
-    printf("N = %d", N);
+    printf("N = %d \n", N);
     cudaMalloc( (void**)&dev_u, N );
     cudaMalloc( (void**)&dev_v, N );
     cudaMalloc( (void**)&dev_f, N );
