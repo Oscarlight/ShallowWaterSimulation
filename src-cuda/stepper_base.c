@@ -225,7 +225,7 @@ void central2d_predict_base_linear(
     float* restrict gy = scratch+nx;
     for (int k = 0; k < nfield; ++k) {
         for (int i = 0; i < (ny-2) * (nx-2); ++i) {
-          int iy = i / (ny-2) + 1;
+          int iy = i / (nx-2) + 1;
           int ix = i % (nx-2) + 1;
           int offset = (k*ny+iy)*nx;
 
