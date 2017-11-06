@@ -225,8 +225,8 @@ void central2d_predict_base_linear(
     float* restrict gy = scratch+nx;
     for (int k = 0; k < nfield; ++k) {
         for (int i = 0; i < (ny-2) * (nx-2); ++i) {
-          int iy = i / (ny-2) + 1;
-          int ix = i % (nx-2) + 1;
+          int iy = i / (nx-2) + 1;
+          int ix = i % (ny-2) + 1;
           int offset = (k*ny+iy)*nx;
 
           // printf(">>> %f, %d \n", 
@@ -237,7 +237,7 @@ void central2d_predict_base_linear(
           fx[ix] = limdiff(f[ix-1+offset], f[ix+offset], f[ix+1+offset]);
           // printf(">>> (k, ix, iy): %d, %d, %d \t %f, %f, %f, -> %f\n", 
           //   k, ix, iy, f[ix-1+offset], f[ix+offset], f[ix+1+offset], fx[ix]);
-          
+
           gy[ix] = limdiff(g[ix-nx+offset], g[ix+offset], g[ix+nx+offset]);
           int offset_ix = (k*ny+iy)*nx+ix;
           v[offset_ix] = u[offset_ix] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];

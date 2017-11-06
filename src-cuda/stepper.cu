@@ -237,41 +237,25 @@ void central2d_predict_cuda(
     int ny = *dev_ny;
     int k = *dev_k;
 
-    // !!! Threads write to scratch at the same time
-    // float* restrict fx = dev_scratch;
-    // float* restrict gy = dev_scratch + nx;
-
     const unsigned int idx = (blockIdx.x * blockDim.x) + threadIdx.x;
     const unsigned int idy = (blockIdx.y * blockDim.y) + threadIdx.y;
     const unsigned int tid = ((gridDim.x * blockDim.x) * idy) + idx;
 
-    int iy = tid / (ny-2) + 1;
-    int ix = tid % (nx-2) + 1;   
+    int iy = tid / (nx-2) + 1;
+    int ix = tid % (ny-2) + 1;   
     int offset = (k*ny+iy)*nx;
 
-    // printf(">>> %f, %d\n", 
-    //   dev_g[ix+nx+offset], ix+nx+offset);
-    // printf(">>> (k, ix, iy): %d, %d, %d \t %f, %f, %f, %d\n", 
-    //   k, ix, iy, dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset], offset);
-    // print_array(dev_u, 25);
-    // printf("dtcdx2: %f\n", dtcdx2);
-    // printf(">>> (k, ix, iy, idx, dev_u[idx]): %d, %d, %d, %d, %f \n", k, ix, iy, 0, dev_u[0]);
-
     float fx = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
-    // printf(">>> (k, ix, iy): %d, %d, %d \t %f, %f, %f, -> %f\n", 
-    //     k, ix, iy, dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset], fx[ix]); 
-
     float gy = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
     int offset_ix = (k*ny+iy)*nx+ix;
-    dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx - dtcdy2 * gy;  
-    // printf(">>>>> (k, ix, iy): %d, %d, %d \t %f, %f, %f, -> %f\n", 
-    //     k, ix, iy, dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset], fx[ix]);
-    // printf(">>> (k, ix, iy, offset_ix, dev_u[offset_ix]): %d, %d, %d, %d, %f \n", 
-    //   k, ix, iy, offset_ix, dev_u[offset_ix]);
-    // printf(">>> (k, ix, iy): %d, %d, %d \t (dev_u[offset_ix], fx[ix], gy[ix]) %f, %f, %f \n", 
-    //   k, ix, iy, dev_u[offset_ix], fx[ix], gy[ix]); 
-    printf(">>> (k, ix, iy): %d, %d, %d \t %f, %d\n", 
-         k, ix, iy, dev_v[offset_ix], offset_ix); 
+    dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx - dtcdy2 * gy;
+
+    // Caution! Unlike series code, we only update scratch at the end
+    if (iy == ny-2) {
+      scratch[ix] = fx;
+      scratch[nx + ix] = gy;
+    }
+
 }
 
 static
@@ -438,11 +422,16 @@ void central2d_step(float* restrict u,
     cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
 
-    // central2d_predict<<<ny_all-2, nx_all-2>>>(
-    //     dev_v, dev_scratch, dev_u, dev_f, dev_g, 
-    //     dev_dtcdx2, dev_dtcdy2,
-    //     dev_nx, dev_ny, dev_nfield
-    // );
+    central2d_predict(
+        dev_v,
+        dev_scratch,
+        dev_u,
+        dev_f,
+        dev_g,
+        dev_dtcdx2,dev_dtcdy2,
+        dev_nx,dev_ny,
+        nfield, nx_all, ny_all
+    )
 
     // Flux values of f and g at half step
     for (int iy = 1; iy < ny_all-1; ++iy) {
