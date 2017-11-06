@@ -9,6 +9,16 @@ extern "C" {
 #include "shallow2d.cuh"
 }
 
+#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
+{
+   if (code != cudaSuccess) 
+   {
+      fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+      if (abort) exit(code);
+   }
+}
+
 void print_array(float* array, int len) {
 	for(int i = 0; i < len; i++) {
 	    printf("%.2f ", array[i]);    
@@ -90,10 +100,10 @@ int main(int argc, char** argv){
     cudaMalloc( (void**)&dev_nx, sizeof(int) );
     cudaMalloc( (void**)&dev_ny, sizeof(int) );
 
-    cudaMemcpy(dev_dtcdx2, &dtcdx2, sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_dtcdy2, &dtcdy2, sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
+    gpuErrchk(cudaMemcpy(dev_dtcdx2, &dtcdx2, sizeof(float), cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMemcpy(dev_dtcdy2, &dtcdy2, sizeof(float), cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice));
 
     central2d_predict_wrapper(
     		dev_v,
