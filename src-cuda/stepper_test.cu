@@ -31,7 +31,7 @@ int main(int argc, char** argv){
     srand(time(NULL));
     int i;
     for (i = 0; i < 4*N + 6*nx_all; i++) {
-    	u[i] = cos((float)i/float(4*N + 6*nx_all))
+    	u[i] = cos((float)i/float(4*N + 6*nx_all));
     	u_ture[i] = u[i];
     }
     float dtcdx2 = 0.3, dtcdy2 = 0.3;
