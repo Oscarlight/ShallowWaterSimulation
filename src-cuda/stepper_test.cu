@@ -91,8 +91,8 @@ int main(int argc, char** argv){
 
     cudaMemcpy(dev_dtcdx2, &dtcdx2, sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_dtcdy2, &dtcdy2, sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_nx, &nx, sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_ny, &ny, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
 
     central2d_predict_wrapper(
     		dev_v,
@@ -102,7 +102,7 @@ int main(int argc, char** argv){
     		dev_g,
     		dev_dtcdx2,dev_dtcdy2,
             dev_nx,dev_ny,
-            nfield, nx_all, ny_all
+            nfield, nx_all, ny_all // CPU
     );
     cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( v, dev_v, N, cudaMemcpyDeviceToHost);
