@@ -72,6 +72,7 @@ int main(int argc, char** argv){
     cudaMalloc( (void**)&dev_g, N );
     cudaMalloc( (void**)&dev_scratch, 6*nx_all*sizeof(float) );
 
+    cudaMemcpy( dev_u, u, N, cudaMemcpyHostToDevice);
     cudaMemcpy( dev_v, v, N, cudaMemcpyHostToDevice);
     cudaMemcpy( dev_f, f, N, cudaMemcpyHostToDevice);
     cudaMemcpy( dev_g, g, N, cudaMemcpyHostToDevice);
