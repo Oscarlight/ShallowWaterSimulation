@@ -445,7 +445,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
 
     // for predict function only
     float* dev_dtcdx2, dev_dtcdy2;
-    int* dev_nx_all, int* dev_ny_all, int* dev_nfield;
+    int* dev_nx_all, dev_ny_all, dev_nfield;
     cudaMalloc( (void**)&dev_dtcdx2, sizeof(float) );
     cudaMalloc( (void**)&dev_dtcdy2, sizeof(float) ); 
     cudaMalloc( (void**)&dev_nx_all, sizeof(int) );
