@@ -34,7 +34,7 @@ shallow2d_base.o: shallow2d_base.c
 stepper_test: stepper_test.o stepper.o stepper_base.o
 	$(NVCC) -o $@ $^ $(NVCCLIBS)
 
-stepper_test.o: stepper_test.cu stepper.cuh stepper_base.h
+stepper_test.o: stepper_test.cu stepper.cuh stepper_base.h shallow2d.cuh
 	$(NVCC) -c $<
 
 stepper.o: stepper.cu
