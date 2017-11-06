@@ -16,7 +16,7 @@
  */
 
 central2d_t* central2d_init(float w, float h, int nx, int ny,
-                            int nfield, flux_t flux, speed_t speed,
+                            int nfield, flux_t_base flux, speed_t_base speed,
                             float cfl)
 {
     // We extend to a four cell buffer to avoid BC comm on odd time steps
@@ -318,7 +318,7 @@ void central2d_step(float* restrict u, float* restrict v,
                     float* restrict f,
                     float* restrict g,
                     int io, int nx, int ny, int ng,
-                    int nfield, flux_t flux, speed_t speed,
+                    int nfield, flux_t_base flux, speed_t_base speed,
                     float dt, float dx, float dy)
 {
     int nx_all = nx + 2*ng;
@@ -365,7 +365,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
                    float* restrict f,
                    float* restrict g,
                    int nx, int ny, int ng,
-                   int nfield, flux_t flux, speed_t speed,
+                   int nfield, flux_t_base flux, speed_t_base speed,
                    float tfinal, float dx, float dy, float cfl)
 {
     int nstep = 0;
