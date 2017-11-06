@@ -237,8 +237,8 @@ void central2d_predict_cuda(
     int ny = *dev_ny;
     int k = *dev_k;
 
-    float* fx = dev_scratch;
-    float* gy = dev_scratch+ nx;
+    float* restrict fx = dev_scratch;
+    float* restrict gy = dev_scratch+ nx;
 
     const unsigned int idx = (blockIdx.x * blockDim.x) + threadIdx.x;
     const unsigned int idy = (blockIdx.y * blockDim.y) + threadIdx.y;
