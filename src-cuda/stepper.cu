@@ -131,7 +131,7 @@ void central2d_periodic(float* restrict u,
 
 
 // Branch-free computation of minmod of two numbers times 2s
-static inline
+__device__ static inline
 float xmin2s(float s, float a, float b) {
     float sa = copysignf(s, a);
     float sb = copysignf(s, b);
