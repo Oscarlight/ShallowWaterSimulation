@@ -80,8 +80,8 @@ int main(int argc, char** argv){
       cudaMemcpyHostToDevice
     );
 
-    float* dev_dtcdx2, dev_dtcdy2;
-    int* dev_nx_all, dev_ny_all, dev_nfield;
+    float *dev_dtcdx2, *dev_dtcdy2;
+    int *dev_nx_all, *dev_ny_all, *dev_nfield;
     cudaMalloc( (void**)&dev_dtcdx2, sizeof(float) );
     cudaMalloc( (void**)&dev_dtcdy2, sizeof(float) ); 
     cudaMalloc( (void**)&dev_nx_all, sizeof(int) );
