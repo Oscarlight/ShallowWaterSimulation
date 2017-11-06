@@ -207,10 +207,25 @@ void limited_derivk(float* restrict du,
  * of scratch space.
  */
 
+void central2d_predict_wrapper(
+                        float* dev_v,
+                       float* dev_scratch,
+                       const float* dev_u,
+                       const float* dev_f,
+                       const float* dev_g,
+                       float* dev_dtcdx2, float* dev_dtcdy2,
+                       int* dev_nx_all, int* dev_ny_all, int* dev_nfield,
+                       int nx_all, int ny_all)
+{
+    central2d_predict<<<ny_all - 2, nx_all - 2>>>(
+        dev_v,dev_scratch,dev_u,dev_f,dev_g,dev_dtcdx2,dev_dtcdy2,
+            dev_nx_all,dev_ny_all,dev_nfield
+    );
+}
 
 // Predictor half-step
 // Number of thread ny-2, nx-2
-__global__
+__global__ static
 void central2d_predict(float* dev_v,
                        float* dev_scratch,
                        const float* dev_u,
