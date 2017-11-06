@@ -100,7 +100,7 @@ int main(int argc, char** argv){
     		dev_g,
     		dev_dtcdx2,dev_dtcdy2,
             dev_nx_all,dev_ny_all,
-            nfield, nx_all, ny_all
+            nfield, nx, ny
     );
 
     cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
