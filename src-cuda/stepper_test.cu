@@ -104,8 +104,8 @@ int main(int argc, char** argv){
     gpuErrchk(cudaMemcpy(dev_dtcdy2, &dtcdy2, sizeof(float), cudaMemcpyHostToDevice));
     gpuErrchk(cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice));
     gpuErrchk(cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice));
-    
-	print_array(dev_u, N);
+
+	print_array(u, N);
     central2d_predict_wrapper(
     		dev_v,
     		dev_scratch,
