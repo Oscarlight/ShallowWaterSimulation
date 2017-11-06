@@ -45,6 +45,7 @@ int main(int argc, char** argv){
     }
 
 	// reset
+	printf("Test linearized series code. ");
     for (i = 0; i < 4*N + 6*nx_all; i++) {
     	u[i] = cos((float)i/float(4*N + 6*nx_all));
     }
