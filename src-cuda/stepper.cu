@@ -237,8 +237,9 @@ void central2d_predict_cuda(
     int ny = *dev_ny;
     int k = *dev_k;
 
-    float* restrict fx = dev_scratch;
-    float* restrict gy = dev_scratch+ nx;
+    // !!! Threads write to scratch at the same time
+    // float* restrict fx = dev_scratch;
+    // float* restrict gy = dev_scratch + nx;
 
     const unsigned int idx = (blockIdx.x * blockDim.x) + threadIdx.x;
     const unsigned int idy = (blockIdx.y * blockDim.y) + threadIdx.y;
@@ -256,15 +257,15 @@ void central2d_predict_cuda(
     // printf("dtcdx2: %f\n", dtcdx2);
     // printf(">>> (k, ix, iy, idx, dev_u[idx]): %d, %d, %d, %d, %f \n", k, ix, iy, 0, dev_u[0]);
 
-    fx[ix] = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
-    printf(">>> (k, ix, iy): %d, %d, %d \t %f, %f, %f, -> %f\n", 
-        k, ix, iy, dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset], fx[ix]); 
+    float fx = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
+    // printf(">>> (k, ix, iy): %d, %d, %d \t %f, %f, %f, -> %f\n", 
+    //     k, ix, iy, dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset], fx[ix]); 
 
-    gy[ix] = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
+    float gy = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
     int offset_ix = (k*ny+iy)*nx+ix;
-    dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];  
-    printf(">>>>> (k, ix, iy): %d, %d, %d \t %f, %f, %f, -> %f\n", 
-        k, ix, iy, dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset], fx[ix]);
+    dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx - dtcdy2 * gy;  
+    // printf(">>>>> (k, ix, iy): %d, %d, %d \t %f, %f, %f, -> %f\n", 
+    //     k, ix, iy, dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset], fx[ix]);
     // printf(">>> (k, ix, iy, offset_ix, dev_u[offset_ix]): %d, %d, %d, %d, %f \n", 
     //   k, ix, iy, offset_ix, dev_u[offset_ix]);
     // printf(">>> (k, ix, iy): %d, %d, %d \t (dev_u[offset_ix], fx[ix], gy[ix]) %f, %f, %f \n", 
