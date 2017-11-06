@@ -1,6 +1,8 @@
 #ifndef STEPPER_H
 #define STEPPER_H
-
+#ifndef RESTRICT
+#define restrict __restrict__
+#endif /* RESTRICT */
 #include <math.h>
 
 void central2d_predict(
