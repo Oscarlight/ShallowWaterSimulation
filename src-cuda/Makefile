@@ -31,10 +31,13 @@ shallow2d.o: shallow2d.cu
 shallow2d_base.o: shallow2d_base.c
 	$(NVCC) -c $<
 
-stepper_test: stepper_test.o stepper_base.o
+stepper_test: stepper_test.o stepper.o stepper_base.o
 	$(NVCC) -o $@ $^ $(NVCCLIBS)
 
 stepper_test.o: stepper_test.cu stepper.cuh stepper_base.h
+	$(NVCC) -c $<
+
+stepper.o: stepper.cu
 	$(NVCC) -c $<
 
 stepper_base.o: stepper_base.c
