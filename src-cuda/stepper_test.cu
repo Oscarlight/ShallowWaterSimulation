@@ -111,7 +111,9 @@ int main(int argc, char** argv){
 
    	printf("Check correctness\n");
 	for (i = 0; i < 4*N + 6*nx_all; i++)
-    	if (u[i] != u_ture[i])
-    		printf("Wrong! \n");
+    	if (u[i] != u_ture[i]) {
+    		printf("Wrong! %f >>><<<< %f \n", u[i], u_ture[i]);
+    	}
+    }
 
 }
