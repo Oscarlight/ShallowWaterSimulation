@@ -6,6 +6,12 @@ extern "C" {
 #include "stepper_base.h"
 }
 
+void print_array(float* array, int len) {
+	for(int i = 0; i < len; i++) {
+	    printf("%.2f ", array[i]);    
+	}
+	printf("\n");
+}
 
 int main(int argc, char** argv){
 	int nx = 1, ny = 2, ng = 4, nfield = 3;
@@ -25,4 +31,5 @@ int main(int argc, char** argv){
     float dtcdx2 = 0.3, dtcdy2 = 0.3;
 	central2d_predict(v, scratch, u, f, g, dtcdx2, dtcdy2,
                   nx, ny, nfield);
+	print_array(u, 4*N + 6*nx_all);
 }
