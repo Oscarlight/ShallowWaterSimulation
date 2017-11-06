@@ -29,18 +29,32 @@ int main(int argc, char** argv){
     float* g  = u + 3*N;
     float* scratch = u + 4*N;
     srand(time(NULL));
+    // set
     int i;
     for (i = 0; i < 4*N + 6*nx_all; i++) {
     	u[i] = cos((float)i/float(4*N + 6*nx_all));
-    	u_ture[i] = u[i];
     }
     float dtcdx2 = 0.3, dtcdy2 = 0.3;
-    print_array(u_ture + N + 4, 1);
+
 	central2d_predict_base(v, scratch, u, f, g, dtcdx2, dtcdy2,
                   nx, ny, nfield);
-	print_array(v + 4, 1);
+
+	// baseline result
+	for (i = 0; i < 4*N + 6*nx_all; i++) {
+    	u_ture[i] = u[i];
+    }
+
+	// reset
+    for (i = 0; i < 4*N + 6*nx_all; i++) {
+    	u[i] = cos((float)i/float(4*N + 6*nx_all));
+    }
+
 	central2d_predict_base_linear(v, scratch, u, f, g, dtcdx2, dtcdy2,
               nx, ny, nfield);
 
+	printf("Check correctness ");
+	for (i = 0; i < 4*N + 6*nx_all; i++)
+    	if (u[i] != u_ture[i])
+    		printf("Wrong! \n");
 
 }
