@@ -141,16 +141,6 @@ float xmin2s(float s, float a, float b) {
     return (sa+sb) * min_abs;
 }
 
-__host__ __device__ static inline
-float xmin2s(float s, float a, float b) {
-    float sa = copysignf(s, a);
-    float sb = copysignf(s, b);
-    float abs_a = fabsf(a);
-    float abs_b = fabsf(b);
-    float min_abs = (abs_a < abs_b ? abs_a : abs_b);
-    return (sa+sb) * min_abs;
-}
-
 // Limited combined slope estimate
 __host__ __device__ static inline
 float limdiff(float um, float u0, float up) {
