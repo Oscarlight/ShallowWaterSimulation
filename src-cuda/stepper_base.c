@@ -225,6 +225,32 @@ void central2d_predict_base(float* restrict v,
     // printf("Enter: \n");
     for (int k = 0; k < nfield; ++k) {
         // printf("> k: \n");
+        for (int i = 0; i < (ny-2) * (nx-2); ++i) {
+          int iy = i % (ny-2) + 1;
+          int ix = i % (nx-2) + 1;
+          int offset = (k*ny+iy)*nx;
+          fx[ix] = limdiff(f[ix-1+offset], f[ix+offset], f[ix+1+offset]);
+          gy[ix] = limdiff(g[ix-nx+offset], g[ix+offset], g[ix+nx+offset]);
+          int offset_ix = (k*ny+iy)*nx+ix;
+          v[offset_ix] = u[offset_ix] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];
+        }
+    }
+}
+
+void central2d_predict_base_linear(
+                       float* restrict v,
+                       float* restrict scratch,
+                       const float* restrict u,
+                       const float* restrict f,
+                       const float* restrict g,
+                       float dtcdx2, float dtcdy2,
+                       int nx, int ny, int nfield)
+{
+    float* restrict fx = scratch;
+    float* restrict gy = scratch+nx;
+    // printf("Enter: \n");
+    for (int k = 0; k < nfield; ++k) {
+        // printf("> k: \n");
         for (int iy = 1; iy < ny-1; ++iy) {
             // printf(">> iy: \n");
             int offset = (k*ny+iy)*nx+1;
@@ -243,7 +269,6 @@ void central2d_predict_base(float* restrict v,
         }
     }
 }
-
 
 // Corrector
 static

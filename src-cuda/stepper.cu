@@ -1,4 +1,4 @@
-#include "stepper.h"
+#include "stepper.cuh"
 
 #include <stdlib.h>
 #include <string.h>
@@ -210,27 +210,40 @@ void limited_derivk(float* restrict du,
 
 
 // Predictor half-step
-static
-void central2d_predict(float* restrict v,
-                       float* restrict scratch,
-                       const float* restrict u,
-                       const float* restrict f,
-                       const float* restrict g,
-                       float dtcdx2, float dtcdy2,
-                       int nx, int ny, int nfield)
+__global__ static
+void central2d_predict(float* dev_v,
+                       float* dev_scratch,
+                       const float* dev_u,
+                       const float* dev_f,
+                       const float* dev_g,
+                       float* dev_dtcdx2, float* dev_dtcdy2,
+                       int* dev_nx, int* dev_ny, int* dev_nfield)
 {
-    float* restrict fx = scratch;
-    float* restrict gy = scratch+nx;
+    int dtcdx2 = *dev_dtcdx2;
+    int dtcdy2 = *dev_dtcdy2;
+    int nfield = *dev_nfield;
+    int nx = *dev_nx;
+    int ny = *dev_ny;
+
+    float* restrict fx = dev_scratch;
+    float* restrict gy = dev_scratch+ nx;
+
+
+    const unsigned int idx = (blockIdx.x * blockDim.x) + threadIdx.x + 1;
+    const unsigned int idy = (blockIdx.y * blockDim.y) + threadIdx.y + 1;
+    // linearize to 1D
+    const unsigned int tid = ((gridDim.x * blockDim.x) * idy) + idx;
+
     for (int k = 0; k < nfield; ++k) {
-        for (int iy = 1; iy < ny-1; ++iy) {
+        // for (int iy = 1; iy < ny-1; ++iy) {
             int offset = (k*ny+iy)*nx+1;
             limited_deriv1(fx+1, f+offset, nx-2);
             limited_derivk(gy+1, g+offset, nx-2, nx);
-            for (int ix = 1; ix < nx-1; ++ix) {
-                int offset = (k*ny+iy)*nx+ix;
-                v[offset] = u[offset] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];
-            }
-        }
+        // for (int ix = 1; ix < nx-1; ++ix) {
+            int offset = (k*ny+iy)*nx+ix;
+            v[offset] = u[offset] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];
+        // }
+      // }
     }
 }
 
@@ -313,10 +326,16 @@ void central2d_correct(float* restrict v,
 
 
 static
-void central2d_step(float* restrict u, float* restrict v,
+void central2d_step(float* restrict u, 
+                    float* restrict v,
                     float* restrict scratch,
                     float* restrict f,
                     float* restrict g,
+                    float* dev_u, 
+                    float* dev_v,
+                    float* dev_scratch,
+                    float* dev_f,
+                    float* dev_g,
                     int io, int nx, int ny, int ng,
                     int nfield, flux_t flux, speed_t speed,
                     float dt, float dx, float dy)
@@ -327,17 +346,22 @@ void central2d_step(float* restrict u, float* restrict v,
     float dtcdx2 = 0.5 * dt / dx;
     float dtcdy2 = 0.5 * dt / dy;
 
-    flux(f, g, u, nx_all * ny_all, nx_all * ny_all);
+    // Run on GPU
+    flux(dev_f, dev_g, dev_u, nx_all, ny_all, nx_all * ny_all);
 
-    central2d_predict(v, scratch, u, f, g, dtcdx2, dtcdy2,
+    // Run on GPU
+    central2d_predict(dev_v, dev_scratch, dev_u, dev_f, dev_g, 
+                      dtcdx2, dtcdy2,
                       nx_all, ny_all, nfield);
 
     // Flux values of f and g at half step
     for (int iy = 1; iy < ny_all-1; ++iy) {
         int jj = iy*nx_all+1;
-        flux(f+jj, g+jj, v+jj, nx_all-2, nx_all * ny_all);
+        // Run on GPU
+        flux(dev_f+jj, dev_g+jj, dev_v+jj, 1, nx_all-2, nx_all * ny_all);
     }
 
+    // Parallelize this!
     central2d_correct(v+io*(nx_all+1), scratch, u, f, g, dtcdx2, dtcdy2,
                       ng-io, nx+ng-io,
                       ng-io, ny+ng-io,
@@ -373,26 +397,49 @@ int central2d_xrun(float* restrict u, float* restrict v,
     int ny_all = ny + 2*ng;
     bool done = false;
     float t = 0;
+
+    // Allocate in GPU
+    int N = nfield * nx_all * ny_all;
+    float *dev_u, *dev_v, *dev_f, *dev_g, *dev_scatch, *dev_cxy;
+    cudaMalloc( (void**)&dev_u, N );
+    cudaMalloc( (void**)&dev_v, N );
+    cudaMalloc( (void**)&dev_f, N );
+    cudaMalloc( (void**)&dev_g, N );
+    cudaMalloc( (void**)&dev_scatch, 6*nx_all );
+    cudaMalloc( (void**)&dev_cxy, 2*sizeof(float) );
+    // Copy from CPU to GPU
+    cudaMemcpy( dev_u, u, N, cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_v, v, N, cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_f, f, N, cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_g, g, N, cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_scatch, scratch, 6*nx_all, cudaMemcpyHostToDevice);
+
     while (!done) {
         float cxy[2] = {1.0e-15f, 1.0e-15f};
+        cudaMemcpy( dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice)
         central2d_periodic(u, nx, ny, ng, nfield);
-        speed(cxy, u, nx_all * ny_all, nx_all * ny_all);
+        speed(dev_cxy, dev_u, nx_all, ny_all, nx_all * ny_all);
+        cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost)
         float dt = cfl / fmaxf(cxy[0]/dx, cxy[1]/dy);
         if (t + 2*dt >= tfinal) {
             dt = (tfinal-t)/2;
             done = true;
         }
         central2d_step(u, v, scratch, f, g,
+                       dev_u, dev_v, dev_scatch, dev_f, dev_g,
                        0, nx+4, ny+4, ng-2,
                        nfield, flux, speed,
                        dt, dx, dy);
         central2d_step(v, u, scratch, f, g,
+                       dev_u, dev_v, dev_scatch, dev_f, dev_g,
                        1, nx, ny, ng,
                        nfield, flux, speed,
                        dt, dx, dy);
         t += 2*dt;
         nstep += 2;
     }
+    // It seems we only need u, need to confirm.
+    cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);   
     return nstep;
 }
 

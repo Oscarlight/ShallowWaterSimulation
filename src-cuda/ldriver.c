@@ -1,6 +1,7 @@
+extern "C" {
 #include "stepper.h"
-#include "shallow2d.h"
-
+#include "shallow2d.cuh"
+}
 #ifdef _OPENMP
 #include <omp.h>
 #elif defined SYSTIME

@@ -19,9 +19,9 @@
  *
  */
 typedef void (*flux_t)(float* FU, float* GU, const float* U,
-                       int ncell, int field_stride);
+                       int nx, int ny, int field_stride);
 typedef void (*speed_t)(float* cxy, const float* U,
-                        int ncell, int field_stride);
+                        int nx, int ny, int field_stride);
 
 
 /**
