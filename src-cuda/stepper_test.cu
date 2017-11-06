@@ -123,6 +123,16 @@ int main(int argc, char** argv){
     cudaMemcpy( f, dev_f, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( g, dev_g, N, cudaMemcpyDeviceToHost);
 
+    cudaFree(dev_u);
+    cudaFree(dev_v);
+    cudaFree(dev_scratch);
+    cudaFree(dev_f);
+    cudaFree(dev_g);
+    cudaFree(dev_dtcdx2);
+    cudaFree(dev_dtcdy2);
+    cudaFree(dev_nx);
+    cudaFree(dev_ny);
+
     // print_array(g, N);
    	printf("Check correctness\n");
 	for (i = 0; i < 4*N + 6*nx_all; i++) {
@@ -130,5 +140,7 @@ int main(int argc, char** argv){
     		printf("Wrong! %f >>><<<< %f \n", u[i], u_ture[i]);
     	}
     }
+
+
 
 }

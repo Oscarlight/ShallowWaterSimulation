@@ -252,7 +252,7 @@ void central2d_predict_cuda(
     //   dev_g[ix+nx+offset], ix+nx+offset);
     // print_array(dev_u, 25);
     // printf("k : %d\n", k);
-    printf(">>> (k, ix, iy, idx, dev_u[idx]): %d, %d, %d, %d, %f \n", k, ix, iy, 24, dev_u[24]);
+    printf(">>> (k, ix, iy, idx, dev_u[idx]): %d, %d, %d, %d, %f \n", k, ix, iy, 0, dev_u[0]);
 
     fx[ix] = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
     gy[ix] = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
@@ -290,6 +290,7 @@ void central2d_predict(float* restrict dev_v,
              dev_k
         );    
     }
+    cudaFree(dev_k);
 }
 
 
