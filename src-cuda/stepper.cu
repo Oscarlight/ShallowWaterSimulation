@@ -261,11 +261,11 @@ void central2d_predict_cuda(
 }
 
 static
-void central2d_predict(float* dev_v,
-                       float* dev_scratch,
-                       const float* dev_u,
-                       const float* dev_f,
-                       const float* dev_g,
+void central2d_predict(float* restrict dev_v,
+                       float* restrict dev_scratch,
+                       const float* restrict dev_u,
+                       const float* restrict dev_f,
+                       const float* restrict dev_g,
                        float* dev_dtcdx2, float* dev_dtcdy2,
                        int* dev_nx, int* dev_ny, 
                        int nfield, int nx, int ny)

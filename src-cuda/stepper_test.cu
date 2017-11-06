@@ -116,6 +116,7 @@ int main(int argc, char** argv){
             dev_nx,dev_ny,
             nfield, nx_all, ny_all // CPU
     );
+   	printf("GPUassert: %s\n", cudaGetErrorString(cudaGetLastError()));
     cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( v, dev_v, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( scratch, dev_scratch, 6*nx_all*sizeof(float), cudaMemcpyDeviceToHost);
