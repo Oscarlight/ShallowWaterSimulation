@@ -63,7 +63,7 @@ int main(int argc, char** argv){
     for (i = 0; i < 4*N + 6*nx_all; i++) {
     	u[i] = cos((float)i/float(4*N + 6*nx_all));
     }  
-
+    print_array(u, N);
     // 
     float *dev_u, *dev_v, *dev_f, *dev_g, *dev_scratch;
     cudaMalloc( (void**)&dev_u, N );
@@ -103,12 +103,14 @@ int main(int argc, char** argv){
             nfield, nx, ny
     );
 
+	print_array(u, N);
     cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( v, dev_v, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( scratch, dev_scratch, 6*nx_all*sizeof(float), cudaMemcpyDeviceToHost);
     cudaMemcpy( f, dev_f, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( g, dev_g, N, cudaMemcpyDeviceToHost);
 
+    print_array(u, N);
    	printf("Check correctness\n");
 	for (i = 0; i < 4*N + 6*nx_all; i++) {
     	if (u[i] != u_ture[i]) {
