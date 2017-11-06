@@ -1,5 +1,5 @@
-#ifndef STEPPER_H
-#define STEPPER_H
+#ifndef STEPPER_CUDA_H
+#define STEPPER_CUDA_H
 
 #include <math.h>
 
