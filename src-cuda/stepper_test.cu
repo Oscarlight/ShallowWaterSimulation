@@ -106,4 +106,9 @@ int main(int argc, char** argv){
     cudaMemcpy( f, dev_f, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( g, dev_g, N, cudaMemcpyDeviceToHost);
 
+   	printf("Check correctness\n");
+	for (i = 0; i < 4*N + 6*nx_all; i++)
+    	if (u[i] != u_ture[i])
+    		printf("Wrong! \n");
+
 }
