@@ -246,8 +246,8 @@ void central2d_predict_base_linear(
           //   k, ix, iy, offset_ix, u[offset_ix]);
           // printf(">>> (k, ix, iy): %d, %d, %d \t (u[offset_ix], fx[ix], gy[ix]) %f, %f, %f \n", 
           //   k, ix, iy, u[offset_ix], fx[ix], gy[ix]);
-          printf(">>> (k, ix, iy): %d, %d, %d \t %f, %d\n", 
-            k, ix, iy, v[offset_ix], offset_ix);
+          // printf(">>> (k, ix, iy): %d, %d, %d \t %f, %d\n", 
+          //   k, ix, iy, v[offset_ix], offset_ix);
           // printf(">>> (k, ix, iy): %d, %d, %d \t %f, %f, %f, -> %f\n", 
           //   k, ix, iy, f[ix-1+offset], f[ix+offset], f[ix+1+offset], fx[ix]);
         }
