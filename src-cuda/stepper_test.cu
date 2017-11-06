@@ -45,7 +45,7 @@ int main(int argc, char** argv){
     }
 
 	// reset
-	printf("Test linearized series code. \n ");
+	printf("Test linearized series code. \n");
     for (i = 0; i < 4*N + 6*nx_all; i++) {
     	u[i] = cos((float)i/float(4*N + 6*nx_all));
     }
@@ -53,7 +53,7 @@ int main(int argc, char** argv){
 	central2d_predict_base_linear(v, scratch, u, f, g, dtcdx2, dtcdy2,
               nx, ny, nfield);
 
-	printf("Check correctness ");
+	printf("Check correctness");
 	for (i = 0; i < 4*N + 6*nx_all; i++)
     	if (u[i] != u_ture[i])
     		printf("Wrong! \n");

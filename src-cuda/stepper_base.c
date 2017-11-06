@@ -223,7 +223,7 @@ void central2d_predict_base(float* restrict v,
     float* restrict fx = scratch;
     float* restrict gy = scratch+nx;
     for (int k = 0; k < nfield; ++k) {
-        printf("> k: \n");
+        printf("> k: %d \n", k);
         for (int i = 0; i < (ny-2) * (nx-2); ++i) {
           int iy = i % (ny-2) + 1;
           int ix = i % (nx-2) + 1;
@@ -250,7 +250,7 @@ void central2d_predict_base_linear(
     float* restrict gy = scratch+nx;
     // printf("Enter: \n");
     for (int k = 0; k < nfield; ++k) {
-        // printf("> k: \n");
+        printf("> k: %d \n", k);
         for (int iy = 1; iy < ny-1; ++iy) {
             // printf(">> iy: \n");
             int offset = (k*ny+iy)*nx+1;
