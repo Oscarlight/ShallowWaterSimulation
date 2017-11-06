@@ -207,6 +207,7 @@ void limited_derivk(float* restrict du,
  * of scratch space.
  */
 
+extern "C"
 void central2d_predict_wrapper(
                         float* dev_v,
                        float* dev_scratch,
