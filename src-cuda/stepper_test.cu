@@ -27,7 +27,17 @@ void print_array(float* array, int len) {
 }
 
 int main(int argc, char** argv){
-	int nx = 3, ny = 5, ng = 1, nfield = 1;
+	if(argc<=2) {
+        printf("You did not feed me arguments, I will die now :( ...");
+        exit(1);
+    }
+   	cudaEvent_t start,stop;
+	float ms;
+	struct timeval startc, end;
+ 	long seconds, useconds;
+ 	double mtime;
+
+	int nx = atoi(argv[1]), ny = toi(argv[2]), ng = 4, nfield = 3;
 	int nx_all = nx + 2*ng;
     int ny_all = ny + 2*ng;
 	int nc = nx_all * ny_all;
@@ -46,8 +56,16 @@ int main(int argc, char** argv){
     }
     float dtcdx2 = 0.3, dtcdy2 = 0.3;
 
+    gettimeofday(&startc, NULL);
 	central2d_predict_base(v, scratch, u, f, g, dtcdx2, dtcdy2,
                   nx_all, ny_all, nfield);
+	gettimeofday(&end, NULL);
+	seconds  = end.tv_sec  - startc.tv_sec;
+	useconds = end.tv_usec - startc.tv_usec;
+	mtime = useconds;
+	mtime/=1000;
+	mtime+=seconds*1000;
+    printf("CPU Original Base: %g ms. \n",mtime);
 
 	// baseline result
 	for (i = 0; i < 4*N + 6*nx_all; i++) {
@@ -60,8 +78,16 @@ int main(int argc, char** argv){
     	u[i] = cos((float)i/float(4*N + 6*nx_all));
     }
 
+    gettimeofday(&startc, NULL);
 	central2d_predict_base_linear(v, scratch, u, f, g, dtcdx2, dtcdy2,
               nx_all, ny_all, nfield);
+	gettimeofday(&end, NULL);
+	seconds  = end.tv_sec  - startc.tv_sec;
+	useconds = end.tv_usec - startc.tv_usec;
+	mtime = useconds;
+	mtime/=1000;
+	mtime+=seconds*1000;
+    printf("CPU linearized Base: %g ms. \n",mtime);
 
 	printf("Check correctness\n");
 	for (i = 0; i < 4*N + 6*nx_all; i++)
@@ -105,8 +131,12 @@ int main(int argc, char** argv){
     gpuErrchk(cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice));
     gpuErrchk(cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice));
 
-	// print_array(u, N);
-    central2d_predict_wrapper(
+	// Time the GPU
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	cudaEventRecord(start, 0); 
+	   
+	central2d_predict_wrapper(
     		dev_v,
     		dev_scratch,
     		dev_u,
@@ -116,6 +146,11 @@ int main(int argc, char** argv){
             dev_nx,dev_ny,
             nfield, nx_all, ny_all // CPU
     );
+	cudaEventRecord(stop, 0);
+	cudaEventSynchronize(stop);
+	cudaEventElapsedTime(&ms, start, stop);
+	printf("GPU: %f ms. \n",ms);
+
    	printf("GPUassert: %s\n", cudaGetErrorString(cudaGetLastError()));
     cudaMemcpy( u, dev_u, N*sizeof(float), cudaMemcpyDeviceToHost);
     cudaMemcpy( v, dev_v, N*sizeof(float), cudaMemcpyDeviceToHost);
