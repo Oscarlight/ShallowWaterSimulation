@@ -220,13 +220,13 @@ void central2d_predict_cuda(
                        const float* dev_f,
                        const float* dev_g,
                        float* dev_dtcdx2, float* dev_dtcdy2,
-                       int* dev_nx_all, int* dev_ny_all,
+                       int* dev_nx, int* dev_ny,
                        int* dev_k)
 {
     int dtcdx2 = *dev_dtcdx2;
     int dtcdy2 = *dev_dtcdy2;
-    int nx = *dev_nx_all;
-    int ny = *dev_ny_all;
+    int nx = *dev_nx;
+    int ny = *dev_ny;
     int k = *dev_k;
 
     float* restrict fx = dev_scratch;
@@ -253,21 +253,21 @@ void central2d_predict(float* dev_v,
                        const float* dev_f,
                        const float* dev_g,
                        float* dev_dtcdx2, float* dev_dtcdy2,
-                       int* dev_nx_all, int* dev_ny_all, 
-                       int nfield, int nx_all, int ny_all)
+                       int* dev_nx, int* dev_ny, 
+                       int nfield, int nx, int ny)
 {
     int *dev_k;
     cudaMalloc((void**)&dev_k, sizeof(int));
     for (int k = 0; k < nfield; ++k) {
         cudaMemcpy(dev_k, &k, sizeof(int), cudaMemcpyHostToDevice);
-        central2d_predict_cuda<<<ny_all-2, nx_all-2>>>(
+        central2d_predict_cuda<<<ny-2, nx-2>>>(
              dev_v,
              dev_scratch,
              dev_u,
              dev_f,
              dev_g,
              dev_dtcdx2, dev_dtcdy2,
-             dev_nx_all, dev_ny_all,
+             dev_nx, dev_ny,
              dev_k
         );    
     }
@@ -283,8 +283,8 @@ void central2d_predict_wrapper(
                        const float* dev_f,
                        const float* dev_g,
                        float* dev_dtcdx2, float* dev_dtcdy2,
-                       int* dev_nx_all, int* dev_ny_all, 
-                       int nfield, int nx_all, int ny_all)
+                       int* dev_nx, int* dev_ny, 
+                       int nfield, int nx, int ny)
 {
 
     central2d_predict(
@@ -294,8 +294,8 @@ void central2d_predict_wrapper(
          dev_f,
          dev_g,
          dev_dtcdx2, dev_dtcdy2,
-         dev_nx_all,dev_ny_all,
-         nfield, nx_all, ny_all
+         dev_nx,dev_ny,
+         nfield, nx, ny
     );
 }
 
@@ -389,8 +389,8 @@ void central2d_step(float* restrict u,
                     float* dev_g,
                     float* dev_dtcdx2, 
                     float* dev_dtcdy2, 
-                    int* dev_nx_all, 
-                    int* dev_ny_all, 
+                    int* dev_nx, 
+                    int* dev_ny, 
                     int io, int nx, int ny, int ng,
                     int nfield, flux_t flux, speed_t speed,
                     float dt, float dx, float dy)
@@ -406,13 +406,13 @@ void central2d_step(float* restrict u,
     // Run on GPU, change dev_v and dev_scratch
     cudaMemcpy(dev_dtcdx2, &dtcdx2, sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_dtcdy2, &dtcdy2, sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_nx_all, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_ny_all, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
 
     // central2d_predict<<<ny_all-2, nx_all-2>>>(
     //     dev_v, dev_scratch, dev_u, dev_f, dev_g, 
     //     dev_dtcdx2, dev_dtcdy2,
-    //     dev_nx_all, dev_ny_all, dev_nfield
+    //     dev_nx, dev_ny, dev_nfield
     // );
 
     // Flux values of f and g at half step
@@ -496,11 +496,11 @@ int central2d_xrun(float* restrict u, float* restrict v,
 
     // for predict function only
     float *dev_dtcdx2, *dev_dtcdy2;
-    int *dev_nx_all, *dev_ny_all;
+    int *dev_nx, *dev_ny;
     cudaMalloc( (void**)&dev_dtcdx2, sizeof(float) );
     cudaMalloc( (void**)&dev_dtcdy2, sizeof(float) ); 
-    cudaMalloc( (void**)&dev_nx_all, sizeof(int) );
-    cudaMalloc( (void**)&dev_ny_all, sizeof(int) );
+    cudaMalloc( (void**)&dev_nx, sizeof(int) );
+    cudaMalloc( (void**)&dev_ny, sizeof(int) );
 
     while (!done) {
         float cxy[2] = {1.0e-15f, 1.0e-15f};
@@ -522,13 +522,13 @@ int central2d_xrun(float* restrict u, float* restrict v,
         // Run on both CPU and GPU
         central2d_step(u, v, scratch, f, g,
                        dev_u, dev_v, dev_scratch, dev_f, dev_g,
-                       dev_dtcdx2, dev_dtcdy2, dev_nx_all, dev_ny_all, 
+                       dev_dtcdx2, dev_dtcdy2, dev_nx, dev_ny, 
                        0, nx+4, ny+4, ng-2,
                        nfield, flux, speed,
                        dt, dx, dy);
         central2d_step(v, u, scratch, f, g,
                        dev_u, dev_v, dev_scratch, dev_f, dev_g,
-                       dev_dtcdx2, dev_dtcdy2, dev_nx_all, dev_ny_all,
+                       dev_dtcdx2, dev_dtcdy2, dev_nx, dev_ny,
                        1, nx, ny, ng,
                        nfield, flux, speed,
                        dt, dx, dy);

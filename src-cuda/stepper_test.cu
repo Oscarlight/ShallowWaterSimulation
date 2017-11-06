@@ -81,16 +81,16 @@ int main(int argc, char** argv){
     );
 
     float *dev_dtcdx2, *dev_dtcdy2;
-    int *dev_nx_all, *dev_ny_all;
+    int *dev_nx, *dev_ny;
     cudaMalloc( (void**)&dev_dtcdx2, sizeof(float) );
     cudaMalloc( (void**)&dev_dtcdy2, sizeof(float) ); 
-    cudaMalloc( (void**)&dev_nx_all, sizeof(int) );
-    cudaMalloc( (void**)&dev_ny_all, sizeof(int) );
+    cudaMalloc( (void**)&dev_nx, sizeof(int) );
+    cudaMalloc( (void**)&dev_ny, sizeof(int) );
 
     cudaMemcpy(dev_dtcdx2, &dtcdx2, sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_dtcdy2, &dtcdy2, sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_nx_all, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_ny_all, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_nx, &nx, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_ny, &ny, sizeof(int), cudaMemcpyHostToDevice);
 
     central2d_predict_wrapper(
     		dev_v,
@@ -99,7 +99,7 @@ int main(int argc, char** argv){
     		dev_f,
     		dev_g,
     		dev_dtcdx2,dev_dtcdy2,
-            dev_nx_all,dev_ny_all,
+            dev_nx,dev_ny,
             nfield, nx, ny
     );
 
