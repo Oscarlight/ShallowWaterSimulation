@@ -213,19 +213,22 @@ void limited_derivk(float* restrict du,
 // Predictor half-step
 // Number of thread ny-2, nx-2
 __global__ static
-void central2d_predict(float* dev_v,
+void central2d_predict_cuda(
+                       float* dev_v,
                        float* dev_scratch,
                        const float* dev_u,
                        const float* dev_f,
                        const float* dev_g,
                        float* dev_dtcdx2, float* dev_dtcdy2,
-                       int* dev_nx_all, int* dev_ny_all, int* dev_nfield)
+                       int* dev_nx_all, int* dev_ny_all, int* dev_nfield,
+                       int* dev_k)
 {
     int dtcdx2 = *dev_dtcdx2;
     int dtcdy2 = *dev_dtcdy2;
     int nfield = *dev_nfield;
     int nx = *dev_nx_all;
     int ny = *dev_ny_all;
+    int k = *dev_k;
 
     float* restrict fx = dev_scratch;
     float* restrict gy = dev_scratch+ nx;
@@ -234,16 +237,68 @@ void central2d_predict(float* dev_v,
     const unsigned int idy = (blockIdx.y * blockDim.y) + threadIdx.y;
     const unsigned int tid = ((gridDim.x * blockDim.x) * idy) + idx;
 
+    int iy = tid / (ny-2) + 1;
+    int ix = tid % (nx-2) + 1;
+    // printf(">>> (ix, iy): %d, %d \n", ix, iy);
+    int offset = (k*ny+iy)*nx;
+    fx[ix] = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
+    gy[ix] = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
+    int offset_ix = (k*ny+iy)*nx+ix;
+    dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];     
+
+}
+
+static
+void central2d_predict(float* dev_v,
+                       float* dev_scratch,
+                       const float* dev_u,
+                       const float* dev_f,
+                       const float* dev_g,
+                       float* dev_dtcdx2, float* dev_dtcdy2,
+                       int* dev_nx_all, int* dev_ny_all, int* dev_nfield,
+                       int nx_all, int ny_all)
+{
+    int *dev_k;
+    cudaMalloc((void**)&dev_k, sizeof(int));
     for (int k = 0; k < nfield; ++k) {
-          int iy = tid / (ny-2) + 1;
-          int ix = tid % (nx-2) + 1;
-          // printf(">>> (ix, iy): %d, %d \n", ix, iy);
-          int offset = (k*ny+iy)*nx;
-          fx[ix] = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
-          gy[ix] = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
-          int offset_ix = (k*ny+iy)*nx+ix;
-          dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];     
+        cudaMemcpy(dev_k, &k, sizeof(int), cudaMemcpyHostToDevice);
+        central2d_predict_cuda<<<ny_all-2, nx_all-2>>>(
+             dev_v,
+             dev_scratch,
+             dev_u,
+             dev_f,
+             dev_g,
+             dev_dtcdx2, dev_dtcdy2,
+             dev_nx_all, dev_ny_all, dev_nfield,
+             dev_k,
+        )    
     }
+}
+
+
+// Expose for test purpose
+extern "C"
+void central2d_predict_wrapper(
+                       float* dev_v,
+                       float* dev_scratch,
+                       const float* dev_u,
+                       const float* dev_f,
+                       const float* dev_g,
+                       float* dev_dtcdx2, float* dev_dtcdy2,
+                       int* dev_nx_all, int* dev_ny_all, int* dev_nfield,
+                       int nx_all, int ny_all)
+{
+
+    central2d_predict(
+         dev_v, 
+         dev_scratch,
+         dev_u,
+         dev_f,
+         dev_g,
+         dev_dtcdx2, dev_dtcdy2,
+         dev_nx_all,dev_ny_all,dev_nfield,
+         nx_all, ny_all,
+    );
 }
 
 // Corrector
@@ -506,24 +561,4 @@ int central2d_run(central2d_t* sim, float tfinal)
                           tfinal, sim->dx, sim->dy, sim->cfl);
 }
 
-extern "C"
-void central2d_predict_wrapper(
-                       float* dev_v,
-                       float* dev_scratch,
-                       const float* dev_u,
-                       const float* dev_f,
-                       const float* dev_g,
-                       float* dev_dtcdx2, float* dev_dtcdy2,
-                       int* dev_nx_all, int* dev_ny_all, int* dev_nfield,
-                       int nx_all, int ny_all)
-{
-    central2d_predict<<<ny_all - 2, nx_all - 2>>>(
-                       dev_v, 
-                       dev_scratch,
-                       dev_u,
-                       dev_f,
-                       dev_g,
-                       dev_dtcdx2, dev_dtcdy2,
-                       dev_nx_all,dev_ny_all,dev_nfield
-    );
-}
+
