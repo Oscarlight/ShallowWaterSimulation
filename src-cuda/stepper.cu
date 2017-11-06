@@ -252,8 +252,8 @@ void central2d_predict_cuda(
 
     // Caution! Unlike series code, we only update scratch at the end
     if (iy == ny-2) {
-      scratch[ix] = fx;
-      scratch[nx + ix] = gy;
+      dev_scratch[ix] = fx;
+      dev_scratch[nx + ix] = gy;
     }
 
 }
@@ -431,7 +431,7 @@ void central2d_step(float* restrict u,
         dev_dtcdx2,dev_dtcdy2,
         dev_nx,dev_ny,
         nfield, nx_all, ny_all
-    )
+    );
 
     // Flux values of f and g at half step
     for (int iy = 1; iy < ny_all-1; ++iy) {
