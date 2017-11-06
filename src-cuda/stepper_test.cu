@@ -14,7 +14,7 @@ void print_array(float* array, int len) {
 }
 
 int main(int argc, char** argv){
-	int nx = 3, ny = 3, ng = 4, nfield = 3;
+	int nx = 3, ny = 3, ng = 1, nfield = 2;
 	int nx_all = nx + 2*ng;
     int ny_all = ny + 2*ng;
 	int nc = nx_all * ny_all;
@@ -26,7 +26,7 @@ int main(int argc, char** argv){
     float* scratch = u + 4*N;
     int i;
     for (i = 0; i < 4*N + 6*nx_all; i++)
-    	u[i] = 0.5;
+    	u[i] = 0.34;
 
     float dtcdx2 = 0.3, dtcdy2 = 0.3;
 	central2d_predict(v, scratch, u, f, g, dtcdx2, dtcdy2,
