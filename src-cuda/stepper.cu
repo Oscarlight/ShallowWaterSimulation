@@ -209,13 +209,14 @@ void limited_derivk(float* restrict du,
  * It also makes it more obvious that we only need four rows worth
  * of scratch space.
  */
-__device__ static
-void print_array(const float* array, int len) {
-  for(int i = 0; i < len; i++) {
-      printf("%.2f ", array[i]);    
-  }
-  printf("\n");
-}
+
+// __device__ static
+// void print_array(const float* array, int len) {
+//   for(int i = 0; i < len; i++) {
+//       printf("%.2f ", array[i]);    
+//   }
+//   printf("\n");
+// }
 
 // Predictor half-step
 // Number of thread ny-2, nx-2
@@ -259,7 +260,8 @@ void central2d_predict_cuda(
     int offset_ix = (k*ny+iy)*nx+ix;
     // printf("offset_ix : %d\n", offset_ix);
     dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];  
-    // printf(">>> (k, ix, iy, offset_ix, dev_u[offset_ix]): %d, %d, %d, %d, %f \n", k, ix, iy, offset_ix, dev_u[offset_ix]);
+    // printf(">>> (k, ix, iy, offset_ix, dev_u[offset_ix]): %d, %d, %d, %d, %f \n", 
+    //   k, ix, iy, offset_ix, dev_u[offset_ix]);
 
     printf(">>> (k, ix, iy): %d, %d, %d \t (dev_u[offset_ix], fx[ix], gy[ix]) %f, %f, %f \n", 
       k, ix, iy, dev_u[offset_ix], fx[ix], gy[ix]);   
