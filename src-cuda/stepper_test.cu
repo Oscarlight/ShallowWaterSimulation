@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <sys/time.h>
 extern "C" {
 #include "stepper.cuh"
@@ -24,9 +25,10 @@ int main(int argc, char** argv){
     float* f  = u + 2*N;
     float* g  = u + 3*N;
     float* scratch = u + 4*N;
+    srand(time(NULL));
     int i;
     for (i = 0; i < 4*N + 6*nx_all; i++)
-    	u[i] = 0.34;
+    	u[i] = (float)rand()/(float)RAND_MAX;
 
     float dtcdx2 = 0.3, dtcdy2 = 0.3;
     print_array(f, 4);
