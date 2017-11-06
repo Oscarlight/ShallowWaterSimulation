@@ -223,11 +223,11 @@ void central2d_predict_base_linear(float* restrict v,
     float* restrict fx = scratch;
     float* restrict gy = scratch+nx;
     for (int k = 0; k < nfield; ++k) {
-        printf("> k: %d \n", k);
+        // printf("> k: %d \n", k);
         for (int i = 0; i < (ny-2) * (nx-2); ++i) {
           int iy = i / (ny-2) + 1;
           int ix = i % (nx-2) + 1;
-          printf(">>> (ix, iy): %d, %d \n", ix, iy);
+          // printf(">>> (ix, iy): %d, %d \n", ix, iy);
           int offset = (k*ny+iy)*nx;
           fx[ix] = limdiff(f[ix-1+offset], f[ix+offset], f[ix+1+offset]);
           gy[ix] = limdiff(g[ix-nx+offset], g[ix+offset], g[ix+nx+offset]);
@@ -250,7 +250,7 @@ void central2d_predict_base(
     float* restrict gy = scratch+nx;
     // printf("Enter: \n");
     for (int k = 0; k < nfield; ++k) {
-        printf("> k: %d \n", k);
+        // printf("> k: %d \n", k);
         for (int iy = 1; iy < ny-1; ++iy) {
             // printf(">> iy: \n");
             int offset = (k*ny+iy)*nx+1;
@@ -258,7 +258,7 @@ void central2d_predict_base(
             limited_derivk(gy+1, g+offset, nx-2, nx);
             for (int ix = 1; ix < nx-1; ++ix) {
                 int offset = (k*ny+iy)*nx+ix;
-                printf(">>> (ix, iy): %d, %d \n", ix, iy);
+                // printf(">>> (ix, iy): %d, %d \n", ix, iy);
                 // printf(">>> ix: offset = %d \n", offset);
                 v[offset] = u[offset] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];
                 // printf(">>> ix: fx[ix] = %f \n", fx[ix]);
