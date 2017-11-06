@@ -16,7 +16,7 @@
  * ### Structure allocation
  */
 
-central2d_t_base* central2d_init(float w, float h, int nx, int ny,
+central2d_t_base* central2d_init_base(float w, float h, int nx, int ny,
                             int nfield, flux_t_base flux, speed_t_base speed,
                             float cfl)
 {
@@ -48,14 +48,14 @@ central2d_t_base* central2d_init(float w, float h, int nx, int ny,
 }
 
 
-void central2d_free(central2d_t_base* sim)
+void central2d_free_base(central2d_t_base* sim)
 {
     free(sim->u);
     free(sim);
 }
 
 
-int central2d_offset(central2d_t_base* sim, int k, int ix, int iy)
+int central2d_offset_base(central2d_t_base* sim, int k, int ix, int iy)
 {
     int nx = sim->nx, ny = sim->ny, ng = sim->ng;
     int nx_all = nx + 2*ng;
