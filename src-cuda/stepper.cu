@@ -131,7 +131,7 @@ void central2d_periodic(float* restrict u,
 
 
 // Branch-free computation of minmod of two numbers times 2s
-__device__ static inline
+__host__ __device__ static inline
 float xmin2s(float s, float a, float b) {
     float sa = copysignf(s, a);
     float sb = copysignf(s, b);
@@ -141,20 +141,19 @@ float xmin2s(float s, float a, float b) {
     return (sa+sb) * min_abs;
 }
 
-
-// Limited combined slope estimate
-__device__ static inline
-float limdiff(float um, float u0, float up) {
-    const float theta = 2.0;
-    const float quarter = 0.25;
-    float du1 = u0-um;   // Difference to left
-    float du2 = up-u0;   // Difference to right
-    float duc = up-um;   // Twice centered difference
-    return xmin2s( quarter, xmin2s(theta, du1, du2), duc );
+__host__ __device__ static inline
+float xmin2s(float s, float a, float b) {
+    float sa = copysignf(s, a);
+    float sb = copysignf(s, b);
+    float abs_a = fabsf(a);
+    float abs_b = fabsf(b);
+    float min_abs = (abs_a < abs_b ? abs_a : abs_b);
+    return (sa+sb) * min_abs;
 }
 
-static inline
-float limdiff_cpu(float um, float u0, float up) {
+// Limited combined slope estimate
+__host__ __device__ static inline
+float limdiff(float um, float u0, float up) {
     const float theta = 2.0;
     const float quarter = 0.25;
     float du1 = u0-um;   // Difference to left
@@ -170,7 +169,7 @@ void limited_deriv1(float* restrict du,
                     int ncell)
 {
     for (int i = 0; i < ncell; ++i)
-        du[i] = limdiff_cpu(u[i-1], u[i], u[i+1]);
+        du[i] = limdiff(u[i-1], u[i], u[i+1]);
 }
 
 
@@ -182,7 +181,7 @@ void limited_derivk(float* restrict du,
 {
     assert(stride > 0);
     for (int i = 0; i < ncell; ++i)
-        du[i] = limdiff_cpu(u[i-stride], u[i], u[i+stride]);
+        du[i] = limdiff(u[i-stride], u[i], u[i+stride]);
 }
 
 
