@@ -210,14 +210,6 @@ void limited_derivk(float* restrict du,
  * of scratch space.
  */
 
-// __device__ static
-// void print_array(const float* array, int len) {
-//   for(int i = 0; i < len; i++) {
-//       printf("%.2f ", array[i]);    
-//   }
-//   printf("\n");
-// }
-
 // Predictor half-step
 // Number of thread ny-2, nx-2
 __global__ static

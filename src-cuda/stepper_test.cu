@@ -77,7 +77,7 @@ int main(int argc, char** argv){
     // print_array(g, N);
     // 
     float *dev_u, *dev_v, *dev_f, *dev_g, *dev_scratch;
-    printf("N = %d \n", N);
+    // printf("N = %d \n", N);
     cudaMalloc( (void**)&dev_u, N*sizeof(float) );
     cudaMalloc( (void**)&dev_v, N*sizeof(float) );
     cudaMalloc( (void**)&dev_f, N*sizeof(float) );
@@ -105,7 +105,7 @@ int main(int argc, char** argv){
     gpuErrchk(cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice));
     gpuErrchk(cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice));
 
-	print_array(u, N);
+	// print_array(u, N);
     central2d_predict_wrapper(
     		dev_v,
     		dev_scratch,
