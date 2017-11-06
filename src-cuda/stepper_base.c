@@ -232,6 +232,7 @@ void central2d_predict(float* restrict v,
             limited_derivk(gy+1, g+offset, nx-2, nx);
             for (int ix = 1; ix < nx-1; ++ix) {
                 int offset = (k*ny+iy)*nx+ix;
+                printf(">>> ix: %d \n", ix);
                 printf(">>> ix: offset = %d \n", offset);
                 v[offset] = u[offset] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];
                 printf(">>> ix: fx[ix] = %f \n", fx[ix]);
