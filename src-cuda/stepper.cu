@@ -375,7 +375,7 @@ void central2d_step(float* restrict u,
     int N = nfield * nx_all * ny_all * sizeof(float);
     cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( v, dev_v, N, cudaMemcpyDeviceToHost);
-    cudaMemcpy( scatch, dev_scratch, 6*nx_all*sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy( scratch, dev_scratch, 6*nx_all*sizeof(float), cudaMemcpyDeviceToHost);
     cudaMemcpy( f, dev_f, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( g, dev_g, N, cudaMemcpyDeviceToHost);
     // TODO: Parallelize this!
@@ -471,13 +471,13 @@ int central2d_xrun(float* restrict u, float* restrict v,
         }
         // Run on both CPU and GPU
         central2d_step(u, v, scratch, f, g,
-                       dev_u, dev_v, dev_scatch, dev_f, dev_g,
+                       dev_u, dev_v, dev_scratch, dev_f, dev_g,
                        dev_dtcdx2, dev_dtcdy2, dev_nx_all, dev_ny_all, dev_nfield, 
                        0, nx+4, ny+4, ng-2,
                        nfield, flux, speed,
                        dt, dx, dy);
         central2d_step(v, u, scratch, f, g,
-                       dev_u, dev_v, dev_scatch, dev_f, dev_g,
+                       dev_u, dev_v, dev_scratch, dev_f, dev_g,
                        dev_dtcdx2, dev_dtcdy2, dev_nx_all, dev_ny_all, dev_nfield,
                        1, nx, ny, ng,
                        nfield, flux, speed,
@@ -491,7 +491,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
     cudaFree( dev_v );
     cudaFree( dev_f );
     cudaFree( dev_g );
-    cudaFree( dev_scatch );
+    cudaFree( dev_scratch );
     cudaFree( dev_cxy );
     return nstep;
 }

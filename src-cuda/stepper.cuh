@@ -109,6 +109,7 @@ int central2d_run(central2d_t* sim, float tfinal);
 void central2d_periodic(float* u, int nx, int ny, int ng, int nfield);
 
 // For test purpose
+__global__
 void central2d_predict(float* dev_v,
                        float* dev_scratch,
                        const float* dev_u,

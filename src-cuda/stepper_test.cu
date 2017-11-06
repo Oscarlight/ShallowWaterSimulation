@@ -94,7 +94,7 @@ int main(int argc, char** argv){
     cudaMemcpy(dev_ny_all, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_nfield, &nfield, sizeof(int), cudaMemcpyHostToDevice);
 
-    central2d_predict(
+    central2d_predict<<<ny_all - 2, nx_all - 2>>>(
     		dev_v,dev_scratch,dev_u,dev_f,dev_g,dev_dtcdx2,dev_dtcdy2,
             dev_nx_all,dev_ny_all,dev_nfield
     );
