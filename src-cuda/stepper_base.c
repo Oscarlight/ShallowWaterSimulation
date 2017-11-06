@@ -231,8 +231,8 @@ void central2d_predict_base_linear(
 
           // printf(">>> %f, %d \n", 
           //   g[ix+nx+offset], ix+nx+offset);
-          printf(">>> %f, %f, %f, %d\n", 
-            f[ix-1+offset], f[ix+offset], f[ix+1+offset], offset);
+          printf(">>> (k, ix, iy): %d, %d, %d \t %f, %f, %f, %d\n", 
+            k, ix, iy, f[ix-1+offset], f[ix+offset], f[ix+1+offset], offset);
 
           fx[ix] = limdiff(f[ix-1+offset], f[ix+offset], f[ix+1+offset]);
           gy[ix] = limdiff(g[ix-nx+offset], g[ix+offset], g[ix+nx+offset]);
@@ -241,8 +241,8 @@ void central2d_predict_base_linear(
 
           // printf(">>> (k, ix, iy, offset_ix, u[offset_ix]): %d, %d, %d, %d, %f \n", 
           //   k, ix, iy, offset_ix, u[offset_ix]);
-          printf(">>> (k, ix, iy): %d, %d, %d \t (u[offset_ix], fx[ix], gy[ix]) %f, %f, %f \n", 
-            k, ix, iy, u[offset_ix], fx[ix], gy[ix]);
+          // printf(">>> (k, ix, iy): %d, %d, %d \t (u[offset_ix], fx[ix], gy[ix]) %f, %f, %f \n", 
+          //   k, ix, iy, u[offset_ix], fx[ix], gy[ix]);
         }
     }
 }
