@@ -14,7 +14,7 @@
  *
  * ### Structure allocation
  */
-
+extern "C"
 central2d_t* central2d_init(float w, float h, int nx, int ny,
                             int nfield, flux_t flux, speed_t speed,
                             float cfl)
@@ -46,14 +46,14 @@ central2d_t* central2d_init(float w, float h, int nx, int ny,
     return sim;
 }
 
-
+extern "C"
 void central2d_free(central2d_t* sim)
 {
     free(sim->u);
     free(sim);
 }
 
-
+extern "C"
 int central2d_offset(central2d_t* sim, int k, int ix, int iy)
 {
     int nx = sim->nx, ny = sim->ny, ng = sim->ng;
@@ -89,6 +89,7 @@ void copy_subgrid(float* restrict dst,
 }
 
 // Change u
+extern "C"
 void central2d_periodic(float* restrict u,
                         int nx, int ny, int ng, int nfield)
 {
@@ -241,28 +242,6 @@ void central2d_predict(float* dev_v,
           int offset_ix = (k*ny+iy)*nx+ix;
           dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];     
     }
-}
-
-extern "C"
-void central2d_predict_wrapper(
-                       float* dev_v,
-                       float* dev_scratch,
-                       const float* dev_u,
-                       const float* dev_f,
-                       const float* dev_g,
-                       float* dev_dtcdx2, float* dev_dtcdy2,
-                       int* dev_nx_all, int* dev_ny_all, int* dev_nfield,
-                       int nx_all, int ny_all)
-{
-    central2d_predict<<<ny_all - 2, nx_all - 2>>>(
-                       dev_v, 
-                       dev_scratch,
-                       dev_u,
-                       dev_f,
-                       dev_g,
-                       dev_dtcdx2, dev_dtcdy2,
-                       dev_nx_all,dev_ny_all,dev_nfield
-    );
 }
 
 // Corrector
@@ -515,7 +494,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
     return nstep;
 }
 
-
+extern "C"
 int central2d_run(central2d_t* sim, float tfinal)
 {
     return central2d_xrun(sim->u, sim->v, sim->scratch,
@@ -523,4 +502,26 @@ int central2d_run(central2d_t* sim, float tfinal)
                           sim->nx, sim->ny, sim->ng,
                           sim->nfield, sim->flux, sim->speed,
                           tfinal, sim->dx, sim->dy, sim->cfl);
+}
+
+extern "C"
+void central2d_predict_wrapper(
+                       float* dev_v,
+                       float* dev_scratch,
+                       const float* dev_u,
+                       const float* dev_f,
+                       const float* dev_g,
+                       float* dev_dtcdx2, float* dev_dtcdy2,
+                       int* dev_nx_all, int* dev_ny_all, int* dev_nfield,
+                       int nx_all, int ny_all)
+{
+    central2d_predict<<<ny_all - 2, nx_all - 2>>>(
+                       dev_v, 
+                       dev_scratch,
+                       dev_u,
+                       dev_f,
+                       dev_g,
+                       dev_dtcdx2, dev_dtcdy2,
+                       dev_nx_all,dev_ny_all,dev_nfield
+    );
 }
