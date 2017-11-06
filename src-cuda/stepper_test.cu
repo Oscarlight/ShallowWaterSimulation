@@ -58,4 +58,51 @@ int main(int argc, char** argv){
     	if (u[i] != u_ture[i])
     		printf("Wrong! \n");
 
+    // reset
+  	printf("Test GPU code. \n");
+    for (i = 0; i < 4*N + 6*nx_all; i++) {
+    	u[i] = cos((float)i/float(4*N + 6*nx_all));
+    }  
+
+    // 
+    float *dev_u, *dev_v, *dev_f, *dev_g, *dev_scatch;
+    cudaMalloc( (void**)&dev_u, N );
+    cudaMalloc( (void**)&dev_v, N );
+    cudaMalloc( (void**)&dev_f, N );
+    cudaMalloc( (void**)&dev_g, N );
+    cudaMalloc( (void**)&dev_scatch, 6*nx_all*sizeof(float) );
+
+    cudaMemcpy( dev_v, v, N, cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_f, f, N, cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_g, g, N, cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_scratch, scratch, 
+      6*nx_all*sizeof(float), 
+      cudaMemcpyHostToDevice
+    );
+
+    float* dev_dtcdx2, dev_dtcdy2;
+    int* dev_nx_all, int* dev_ny_all, int* dev_nfield;
+    cudaMalloc( (void**)&dev_dtcdx2, sizeof(float) );
+    cudaMalloc( (void**)&dev_dtcdy2, sizeof(float) ); 
+    cudaMalloc( (void**)&dev_nx_all, sizeof(int) );
+    cudaMalloc( (void**)&dev_ny_all, sizeof(int) );
+    cudaMalloc( (void**)&dev_nfield, sizeof(int) );
+
+    cudaMemcpy(dev_dtcdx2, dtcdx2, sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_dtcdy2, dtcdy2, sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_nx_all, nx_all, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_ny_all, ny_all, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_nfield, nfield, sizeof(int), cudaMemcpyHostToDevice);
+
+    central2d_predict(
+    		dev_v,dev_scratch,dev_u,dev_f,dev_g,dev_dtcdx2,dev_dtcdy2,
+            dev_nx_all,dev_ny_all,dev_nfield
+    );
+
+    cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
+    cudaMemcpy( v, dev_v, N, cudaMemcpyDeviceToHost);
+    cudaMemcpy( scatch, dev_scratch, 6*nx_all*sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy( f, dev_f, N, cudaMemcpyDeviceToHost);
+    cudaMemcpy( g, dev_g, N, cudaMemcpyDeviceToHost);
+
 }

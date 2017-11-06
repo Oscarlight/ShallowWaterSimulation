@@ -212,7 +212,7 @@ void limited_derivk(float* restrict du,
 
 // Predictor half-step
 // Number of thread ny-2, nx-2
-__global__ static
+__global__
 void central2d_predict(float* dev_v,
                        float* dev_scratch,
                        const float* dev_u,
