@@ -88,11 +88,11 @@ int main(int argc, char** argv){
     cudaMalloc( (void**)&dev_ny_all, sizeof(int) );
     cudaMalloc( (void**)&dev_nfield, sizeof(int) );
 
-    cudaMemcpy(dev_dtcdx2, dtcdx2, sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_dtcdy2, dtcdy2, sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_nx_all, nx_all, sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_ny_all, ny_all, sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(dev_nfield, nfield, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_dtcdx2, &dtcdx2, sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_dtcdy2, &dtcdy2, sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_nx_all, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_ny_all, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_nfield, &nfield, sizeof(int), cudaMemcpyHostToDevice);
 
     central2d_predict(
     		dev_v,dev_scratch,dev_u,dev_f,dev_g,dev_dtcdx2,dev_dtcdy2,
