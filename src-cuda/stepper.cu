@@ -268,7 +268,7 @@ void central2d_predict(float* dev_v,
              dev_g,
              dev_dtcdx2, dev_dtcdy2,
              dev_nx_all, dev_ny_all,
-             dev_k,
+             dev_k
         );    
     }
 }
