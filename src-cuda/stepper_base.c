@@ -212,7 +212,7 @@ void limited_derivk(float* restrict du,
 
 // Predictor half-step
 // static
-void central2d_predict_base(float* restrict v,
+void central2d_predict_base_linear(float* restrict v,
                        float* restrict scratch,
                        const float* restrict u,
                        const float* restrict f,
@@ -237,7 +237,7 @@ void central2d_predict_base(float* restrict v,
     }
 }
 
-void central2d_predict_base_linear(
+void central2d_predict_base(
                        float* restrict v,
                        float* restrict scratch,
                        const float* restrict u,
