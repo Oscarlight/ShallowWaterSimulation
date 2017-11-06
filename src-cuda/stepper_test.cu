@@ -27,7 +27,7 @@ void print_array(float* array, int len) {
 }
 
 int main(int argc, char** argv){
-	int nx = 3, ny = 3, ng = 1, nfield = 1;
+	int nx = 3, ny = 5, ng = 1, nfield = 1;
 	int nx_all = nx + 2*ng;
     int ny_all = ny + 2*ng;
 	int nc = nx_all * ny_all;
