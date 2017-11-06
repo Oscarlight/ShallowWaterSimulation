@@ -557,12 +557,16 @@ int central2d_xrun(float* restrict u, float* restrict v,
     }
     // It seems we only need u, need to confirm.
     cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);  
-    cudaFree( dev_u );
-    cudaFree( dev_v );
-    cudaFree( dev_f );
-    cudaFree( dev_g );
-    cudaFree( dev_scratch );
-    cudaFree( dev_cxy );
+    cudaFree(dev_u);
+    cudaFree(dev_v);
+    cudaFree(dev_scratch);
+    cudaFree(dev_f);
+    cudaFree(dev_g);
+    cudaFree(cxy);
+    cudaFree(dev_dtcdx2);
+    cudaFree(dev_dtcdy2);
+    cudaFree(dev_nx);
+    cudaFree(dev_ny);
     return nstep;
 }
 

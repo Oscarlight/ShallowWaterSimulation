@@ -78,10 +78,10 @@ int main(int argc, char** argv){
     // 
     float *dev_u, *dev_v, *dev_f, *dev_g, *dev_scratch;
     printf("N = %d \n", N);
-    cudaMalloc( (void**)&dev_u, N );
-    cudaMalloc( (void**)&dev_v, N );
-    cudaMalloc( (void**)&dev_f, N );
-    cudaMalloc( (void**)&dev_g, N );
+    cudaMalloc( (void**)&dev_u, N*sizeof(float) );
+    cudaMalloc( (void**)&dev_v, N*sizeof(float) );
+    cudaMalloc( (void**)&dev_f, N*sizeof(float) );
+    cudaMalloc( (void**)&dev_g, N*sizeof(float) );
     cudaMalloc( (void**)&dev_scratch, 6*nx_all*sizeof(float) );
 
     cudaMemcpy( dev_u, u, N, cudaMemcpyHostToDevice);
