@@ -8,6 +8,7 @@ extern "C" {
 #include "stepper_base.h"
 #include "shallow2d.cuh"
 }
+#define EPSILON 0.000001
 
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
@@ -91,8 +92,8 @@ int main(int argc, char** argv){
 
 	printf("Check correctness\n");
 	for (i = 0; i < 4*N + 6*nx_all; i++)
-    	if (u[i] != u_ture[i])
-    		printf("Wrong! \n");
+    	if (abs(u[i] - u_ture[i]) > EPSILON)
+    		printf("Wrong! %f >>><<<< %f \n", u[i], u_ture[i]);
 
     // reset
   	printf("Test GPU code. \n");
@@ -171,7 +172,7 @@ int main(int argc, char** argv){
     // print_array(g, N);
    	printf("Check correctness\n");
 	for (i = 0; i < 4*N + 6*nx_all; i++) {
-    	if (u[i] != u_ture[i]) {
+    	if (abs(u[i] - u_ture[i]) > EPSILON) {
     		printf("Wrong! %f >>><<<< %f \n", u[i], u_ture[i]);
     	}
     }
