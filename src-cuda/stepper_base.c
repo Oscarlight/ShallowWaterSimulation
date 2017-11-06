@@ -225,7 +225,7 @@ void central2d_predict_base_linear(float* restrict v,
     for (int k = 0; k < nfield; ++k) {
         printf("> k: %d \n", k);
         for (int i = 0; i < (ny-2) * (nx-2); ++i) {
-          int iy = i % (ny-2) + 1;
+          int iy = i / (ny-2) + 1;
           int ix = i % (nx-2) + 1;
           printf(">>> (ix, iy): %d, %d \n", ix, iy);
           int offset = (k*ny+iy)*nx;
