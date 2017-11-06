@@ -1,4 +1,6 @@
+extern "C" {
 #include "stepper.cuh"
+}
 
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +16,7 @@
  *
  * ### Structure allocation
  */
-// extern "C"
+extern "C"
 central2d_t* central2d_init(float w, float h, int nx, int ny,
                             int nfield, flux_t flux, speed_t speed,
                             float cfl)
@@ -46,14 +48,14 @@ central2d_t* central2d_init(float w, float h, int nx, int ny,
     return sim;
 }
 
-// extern "C"
+extern "C"
 void central2d_free(central2d_t* sim)
 {
     free(sim->u);
     free(sim);
 }
 
-// extern "C"
+extern "C"
 int central2d_offset(central2d_t* sim, int k, int ix, int iy)
 {
     int nx = sim->nx, ny = sim->ny, ng = sim->ng;
@@ -89,7 +91,7 @@ void copy_subgrid(float* restrict dst,
 }
 
 // Change u
-// extern "C"
+extern "C"
 void central2d_periodic(float* restrict u,
                         int nx, int ny, int ng, int nfield)
 {
@@ -494,7 +496,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
     return nstep;
 }
 
-// extern "C"
+extern "C"
 int central2d_run(central2d_t* sim, float tfinal)
 {
     return central2d_xrun(sim->u, sim->v, sim->scratch,
@@ -504,7 +506,7 @@ int central2d_run(central2d_t* sim, float tfinal)
                           tfinal, sim->dx, sim->dy, sim->cfl);
 }
 
-// extern "C"
+extern "C"
 void central2d_predict_wrapper(
                        float* dev_v,
                        float* dev_scratch,
