@@ -37,7 +37,7 @@ int main(int argc, char** argv){
     float dtcdx2 = 0.3, dtcdy2 = 0.3;
 
 	central2d_predict_base(v, scratch, u, f, g, dtcdx2, dtcdy2,
-                  nx, ny, nfield);
+                  nx_all, ny_all, nfield);
 
 	// baseline result
 	for (i = 0; i < 4*N + 6*nx_all; i++) {
@@ -51,7 +51,7 @@ int main(int argc, char** argv){
     }
 
 	central2d_predict_base_linear(v, scratch, u, f, g, dtcdx2, dtcdy2,
-              nx, ny, nfield);
+              nx_all, ny_all, nfield);
 
 	printf("Check correctness\n");
 	for (i = 0; i < 4*N + 6*nx_all; i++)
@@ -102,7 +102,7 @@ int main(int argc, char** argv){
     		dev_g,
     		dev_dtcdx2,dev_dtcdy2,
             dev_nx,dev_ny,
-            nfield, nx, ny
+            nfield, nx_all, ny_all
     );
     cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( v, dev_v, N, cudaMemcpyDeviceToHost);

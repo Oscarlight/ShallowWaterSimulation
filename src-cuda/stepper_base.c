@@ -227,8 +227,10 @@ void central2d_predict_base_linear(float* restrict v,
           int iy = i / (ny-2) + 1;
           int ix = i % (nx-2) + 1;
           int offset = (k*ny+iy)*nx;
-          printf(">>> %f, %d \n", 
-            g[ix+nx+offset], ix+nx+offset);
+          
+          // printf(">>> %f, %d \n", 
+          //   g[ix+nx+offset], ix+nx+offset);
+
           fx[ix] = limdiff(f[ix-1+offset], f[ix+offset], f[ix+1+offset]);
           gy[ix] = limdiff(g[ix-nx+offset], g[ix+offset], g[ix+nx+offset]);
           int offset_ix = (k*ny+iy)*nx+ix;
