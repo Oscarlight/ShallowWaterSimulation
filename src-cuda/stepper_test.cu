@@ -70,7 +70,7 @@ int main(int argc, char** argv){
     cudaMalloc( (void**)&dev_v, N );
     cudaMalloc( (void**)&dev_f, N );
     cudaMalloc( (void**)&dev_g, N );
-    cudaMalloc( (void**)&dev_scatch, 6*nx_all*sizeof(float) );
+    cudaMalloc( (void**)&dev_scratch, 6*nx_all*sizeof(float) );
 
     cudaMemcpy( dev_v, v, N, cudaMemcpyHostToDevice);
     cudaMemcpy( dev_f, f, N, cudaMemcpyHostToDevice);
