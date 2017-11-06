@@ -3,7 +3,7 @@
 #include <sys/time.h>
 extern "C" {
 #include "stepper.cuh"
-#include "stepper.h"
+#include "stepper_base.h"
 }
 
 
