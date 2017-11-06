@@ -562,7 +562,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
     cudaFree(dev_scratch);
     cudaFree(dev_f);
     cudaFree(dev_g);
-    cudaFree(cxy);
+    cudaFree(dev_cxy);
     cudaFree(dev_dtcdx2);
     cudaFree(dev_dtcdy2);
     cudaFree(dev_nx);
