@@ -40,7 +40,7 @@ stepper_test.o: stepper_test.cu stepper.cuh stepper_base.h shallow2d.cuh
 stepper.o: stepper.cu stepper.cuh
 	$(NVCC) -c $<
 
-stepper_base.o: stepper_base.c
+stepper_base.o: stepper_base.c stepper_base.h
 	$(NVCC) -c $<
 
 # ===

@@ -89,7 +89,7 @@ void copy_subgrid(float* restrict dst,
             dst[iy*stride+ix] = src[iy*stride+ix];
 }
 
-void central2d_periodic(float* restrict u,
+void central2d_periodic_base(float* restrict u,
                         int nx, int ny, int ng, int nfield)
 {
     // Stride and number per field
@@ -410,7 +410,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
     float t = 0;
     while (!done) {
         float cxy[2] = {1.0e-15f, 1.0e-15f};
-        central2d_periodic(u, nx, ny, ng, nfield);
+        central2d_periodic_base(u, nx, ny, ng, nfield);
         speed(cxy, u, nx_all * ny_all, nx_all * ny_all);
         float dt = cfl / fmaxf(cxy[0]/dx, cxy[1]/dy);
         if (t + 2*dt >= tfinal) {
