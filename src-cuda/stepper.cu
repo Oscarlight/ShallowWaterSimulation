@@ -239,8 +239,8 @@ void central2d_predict(float* dev_v,
           int ix = tid % (nx-2) + 1;
           // printf(">>> (ix, iy): %d, %d \n", ix, iy);
           int offset = (k*ny+iy)*nx;
-          fx[ix] = limdiff(f[ix-1+offset], f[ix+offset], f[ix+1+offset]);
-          gy[ix] = limdiff(g[ix-nx+offset], g[ix+offset], g[ix+nx+offset]);
+          fx[ix] = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
+          gy[ix] = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
           int offset_ix = (k*ny+iy)*nx+ix;
           dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];     
     }
@@ -358,7 +358,7 @@ void central2d_step(float* restrict u,
     cudaMemcpy(dev_nx_all, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_ny_all, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_nfield, &nfield, sizeof(int), cudaMemcpyHostToDevice);
-    
+
     central2d_predict<<<ny_all-2, nx_all-2>>>(
         dev_v, dev_scratch, dev_u, dev_f, dev_g, 
         dev_dtcdx2, dev_dtcdy2,
@@ -460,10 +460,10 @@ int central2d_xrun(float* restrict u, float* restrict v,
         central2d_periodic(u, nx, ny, ng, nfield);
 
         cudaMemcpy( dev_u, u, N, cudaMemcpyHostToDevice);
-        udaMemcpy( dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice)
+        cudaMemcpy( dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice);
         // Run on GPU, change dev_cxy
         speed(dev_cxy, dev_u, nx_all, ny_all, nx_all * ny_all);
-        cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost)
+        cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost);
 
         float dt = cfl / fmaxf(cxy[0]/dx, cxy[1]/dy);
         if (t + 2*dt >= tfinal) {
