@@ -234,6 +234,9 @@ void central2d_predict(float* restrict v,
                 int offset = (k*ny+iy)*nx+ix;
                 printf(">>> ix: offset = %d \n", offset);
                 v[offset] = u[offset] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];
+                printf(">>> ix: fx[ix] = %f \n", fx[ix]);
+                printf(">>> ix: gy[ix] = %f \n", gy[ix]);
+                printf(">>> ix: u[offset] = %f \n", u[offset]);
                 printf(">>> ix: v[offset] = %f \n", v[offset]);
             }
         }
