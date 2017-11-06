@@ -295,7 +295,7 @@ void central2d_predict_wrapper(
          dev_g,
          dev_dtcdx2, dev_dtcdy2,
          dev_nx_all,dev_ny_all,
-         nfield, nx_all, ny_all,
+         nfield, nx_all, ny_all
     );
 }
 
