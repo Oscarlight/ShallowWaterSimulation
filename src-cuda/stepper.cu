@@ -238,7 +238,7 @@ void central2d_predict_cuda(
 
     int iy = tid / (ny-2) + 1;
     int ix = tid % (nx-2) + 1;
-    // printf(">>> (ix, iy): %d, %d \n", ix, iy);
+    printf(">>> (k, ix, iy): %d, %d, %d \n", k, ix, iy);    
     int offset = (k*ny+iy)*nx;
     fx[ix] = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
     gy[ix] = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
