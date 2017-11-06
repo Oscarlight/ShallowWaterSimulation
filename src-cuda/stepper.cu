@@ -234,7 +234,7 @@ void central2d_predict_cuda(
     const unsigned int tid = ((gridDim.x * blockDim.x) * idy) + idx;
 
     int iy = tid / (nx-2) + 1;
-    int ix = tid % (ny-2) + 1;   
+    int ix = tid % (nx-2) + 1;   
     int offset = (k*ny+iy)*nx;
 
     float fx = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
