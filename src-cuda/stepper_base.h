@@ -31,7 +31,7 @@ typedef struct central2d_t_base {
 
 } central2d_t_base;
 
-int central2d_run_base(central2d_t* sim, float tfinal);
+int central2d_run_base(central2d_t_base* sim, float tfinal);
 
 void central2d_predict_base(
     float* restrict v, 
