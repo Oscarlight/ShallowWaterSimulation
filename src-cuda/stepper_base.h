@@ -5,10 +5,11 @@
 #endif /* RESTRICT */
 #include <math.h>
 
-typedef void (*flux_t)(float* FU, float* GU, const float* U,
+typedef void (*flux_t_base)(float* FU, float* GU, const float* U,
                        int ncell, int field_stride);
-typedef void (*speed_t)(float* cxy, const float* U,
+typedef void (*speed_t_base)(float* cxy, const float* U,
                         int ncell, int field_stride);
+
 typedef struct central2d_t_base {
 
     int nfield;   // Number of components in system
@@ -18,8 +19,8 @@ typedef struct central2d_t_base {
     float cfl;    // Max allowed CFL number
 
     // Flux and speed functions
-    flux_t flux;
-    speed_t speed;
+    flux_t_base flux;
+    speed_t_base speed;
 
     // Storage
     float* u;

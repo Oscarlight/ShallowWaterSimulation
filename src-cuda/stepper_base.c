@@ -15,14 +15,14 @@
  * ### Structure allocation
  */
 
-central2d_t* central2d_init(float w, float h, int nx, int ny,
+central2d_t_base* central2d_init(float w, float h, int nx, int ny,
                             int nfield, flux_t_base flux, speed_t_base speed,
                             float cfl)
 {
     // We extend to a four cell buffer to avoid BC comm on odd time steps
     int ng = 4;
 
-    central2d_t* sim = (central2d_t*) malloc(sizeof(central2d_t));
+    central2d_t_base* sim = (central2d_t_base*) malloc(sizeof(central2d_t_base));
     sim->nx = nx;
     sim->ny = ny;
     sim->ng = ng;
@@ -47,14 +47,14 @@ central2d_t* central2d_init(float w, float h, int nx, int ny,
 }
 
 
-void central2d_free(central2d_t* sim)
+void central2d_free(central2d_t_base* sim)
 {
     free(sim->u);
     free(sim);
 }
 
 
-int central2d_offset(central2d_t* sim, int k, int ix, int iy)
+int central2d_offset(central2d_t_base* sim, int k, int ix, int iy)
 {
     int nx = sim->nx, ny = sim->ny, ng = sim->ng;
     int nx_all = nx + 2*ng;
@@ -397,7 +397,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
 }
 
 
-int central2d_run(central2d_t* sim, float tfinal)
+int central2d_run(central2d_t_base* sim, float tfinal)
 {
     return central2d_xrun(sim->u, sim->v, sim->scratch,
                           sim->f, sim->g,
