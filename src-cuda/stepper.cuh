@@ -1,6 +1,9 @@
 #ifndef STEPPER_CUDA_H
 #define STEPPER_CUDA_H
-
+#ifndef RESTRICT
+#define restrict __restrict__
+#endif /* RESTRICT */
+#include <math.h>
 #include <math.h>
 
 //ldoc
