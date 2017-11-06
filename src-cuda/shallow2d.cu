@@ -77,7 +77,7 @@ void shallow2d_flux_cu(float* FU, float* GU, const float* U,
 {
     cudaMemcpy(FU, U+field_stride,   nx * ny * sizeof(float), cudaMemcpyDeviceToDevice);
     cudaMemcpy(GU, U+2*field_stride, nx * ny * sizeof(float), cudaMemcpyDeviceToDevice);
-    shallow2dv_flux<<<(nx * ny)/256, 256>>>(FU, FU+field_stride, FU+2*field_stride,
+    shallow2dv_flux<<<ny, nx>>>(FU, FU+field_stride, FU+2*field_stride,
                     GU, GU+field_stride, GU+2*field_stride,
                     U,  U +field_stride, U +2*field_stride,
                     g);
@@ -87,5 +87,5 @@ extern "C"
 void shallow2d_speed_cu(float* cxy, const float* U,
                      int nx, int ny, int field_stride)
 {
-    shallow2dv_speed<<<(nx * ny)/256, 256>>>(cxy, U, U+field_stride, U+2*field_stride, g);
+    shallow2dv_speed<<<ny, nx>>>(cxy, U, U+field_stride, U+2*field_stride, g);
 }
