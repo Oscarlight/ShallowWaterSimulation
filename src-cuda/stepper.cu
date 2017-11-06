@@ -251,6 +251,8 @@ void central2d_predict_cuda(
 
     // printf(">>> %f, %d\n", 
     //   dev_g[ix+nx+offset], ix+nx+offset);
+    printf(">>> %f, %f, %f, %d\n", 
+      dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset], offset);
     // print_array(dev_u, 25);
     // printf("k : %d\n", k);
     // printf(">>> (k, ix, iy, idx, dev_u[idx]): %d, %d, %d, %d, %f \n", k, ix, iy, 0, dev_u[0]);

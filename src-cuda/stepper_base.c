@@ -231,6 +231,8 @@ void central2d_predict_base_linear(
 
           // printf(">>> %f, %d \n", 
           //   g[ix+nx+offset], ix+nx+offset);
+          printf(">>> %f, %f, %f, %d\n", 
+            f[ix-1+offset], f[ix+offset], f[ix+1+offset], offset);
 
           fx[ix] = limdiff(f[ix-1+offset], f[ix+offset], f[ix+1+offset]);
           gy[ix] = limdiff(g[ix-nx+offset], g[ix+offset], g[ix+nx+offset]);
