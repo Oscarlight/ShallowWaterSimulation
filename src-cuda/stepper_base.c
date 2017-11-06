@@ -301,7 +301,7 @@ void central2d_correct_sd(float* restrict s,
 
 
 // Corrector
-// static
+static
 void central2d_correct(float* restrict v,
                        float* restrict scratch,
                        const float* restrict u,
