@@ -221,11 +221,11 @@ void print_array(const float* array, int len) {
 // Number of thread ny-2, nx-2
 __global__ static
 void central2d_predict_cuda(
-                       float* dev_v,
-                       float* dev_scratch,
-                       const float* dev_u,
-                       const float* dev_f,
-                       const float* dev_g,
+                       float* restrict dev_v,
+                       float* restrict dev_scratch,
+                       const float* restrict dev_u,
+                       const float* restrict dev_f,
+                       const float* restrict dev_g,
                        float* dev_dtcdx2, float* dev_dtcdy2,
                        int* dev_nx, int* dev_ny,
                        int* dev_k)
