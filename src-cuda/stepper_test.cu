@@ -37,7 +37,7 @@ int main(int argc, char** argv){
  	long seconds, useconds;
  	double mtime;
 
-	int nx = atoi(argv[1]), ny = toi(argv[2]), ng = 4, nfield = 3;
+	int nx = atoi(argv[1]), ny = atoi(argv[2]), ng = 4, nfield = 3;
 	int nx_all = nx + 2*ng;
     int ny_all = ny + 2*ng;
 	int nc = nx_all * ny_all;
@@ -135,7 +135,7 @@ int main(int argc, char** argv){
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start, 0); 
-	   
+
 	central2d_predict_wrapper(
     		dev_v,
     		dev_scratch,
