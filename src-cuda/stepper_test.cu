@@ -31,7 +31,7 @@ int main(int argc, char** argv){
     	u[i] = (float)rand()/(float)RAND_MAX;
 
     float dtcdx2 = 0.3, dtcdy2 = 0.3;
-    print_array(f, 4);
+    print_array(v, N);
 	central2d_predict(v, scratch, u, f, g, dtcdx2, dtcdy2,
                   nx, ny, nfield);
 	print_array(v, N);

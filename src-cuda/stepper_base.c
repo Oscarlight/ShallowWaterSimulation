@@ -222,23 +222,23 @@ void central2d_predict(float* restrict v,
 {
     float* restrict fx = scratch;
     float* restrict gy = scratch+nx;
-    printf("Enter: \n");
+    // printf("Enter: \n");
     for (int k = 0; k < nfield; ++k) {
-        printf("> k: \n");
+        // printf("> k: \n");
         for (int iy = 1; iy < ny-1; ++iy) {
-            printf(">> iy: \n");
+            // printf(">> iy: \n");
             int offset = (k*ny+iy)*nx+1;
             limited_deriv1(fx+1, f+offset, nx-2);
             limited_derivk(gy+1, g+offset, nx-2, nx);
             for (int ix = 1; ix < nx-1; ++ix) {
                 int offset = (k*ny+iy)*nx+ix;
-                printf(">>> ix: %d \n", ix);
-                printf(">>> ix: offset = %d \n", offset);
+                // printf(">>> ix: %d \n", ix);
+                // printf(">>> ix: offset = %d \n", offset);
                 v[offset] = u[offset] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];
-                printf(">>> ix: fx[ix] = %f \n", fx[ix]);
-                printf(">>> ix: gy[ix] = %f \n", gy[ix]);
-                printf(">>> ix: u[offset] = %f \n", u[offset]);
-                printf(">>> ix: v[offset] = %f \n", v[offset]);
+                // printf(">>> ix: fx[ix] = %f \n", fx[ix]);
+                // printf(">>> ix: gy[ix] = %f \n", gy[ix]);
+                // printf(">>> ix: u[offset] = %f \n", u[offset]);
+                // printf(">>> ix: v[offset] = %f \n", v[offset]);
             }
         }
     }
