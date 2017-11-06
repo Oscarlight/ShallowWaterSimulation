@@ -1,6 +1,6 @@
-extern "C" {
-#include "stepper.cuh"
-}
+// extern "C" {
+// #include "stepper.cuh"
+// }
 
 #include <stdlib.h>
 #include <string.h>
