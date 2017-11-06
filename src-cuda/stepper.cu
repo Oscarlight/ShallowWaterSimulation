@@ -210,7 +210,7 @@ void limited_derivk(float* restrict du,
  * of scratch space.
  */
 static
-void print_array(float* array, int len) {
+void print_array(const float* array, int len) {
   for(int i = 0; i < len; i++) {
       printf("%.2f ", array[i]);    
   }
