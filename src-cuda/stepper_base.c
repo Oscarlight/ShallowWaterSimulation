@@ -221,12 +221,16 @@ void central2d_predict(float* restrict v,
 {
     float* restrict fx = scratch;
     float* restrict gy = scratch+nx;
+    printf("Enter: \n")
     for (int k = 0; k < nfield; ++k) {
+        printf("> k: \n")
         for (int iy = 1; iy < ny-1; ++iy) {
+            printf("> iy: \n")
             int offset = (k*ny+iy)*nx+1;
             limited_deriv1(fx+1, f+offset, nx-2);
             limited_derivk(gy+1, g+offset, nx-2, nx);
             for (int ix = 1; ix < nx-1; ++ix) {
+                printf("> ix: \n")
                 int offset = (k*ny+iy)*nx+ix;
                 v[offset] = u[offset] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];
             }
