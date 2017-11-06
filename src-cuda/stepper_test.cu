@@ -65,7 +65,7 @@ int main(int argc, char** argv){
     }  
 
     // 
-    float *dev_u, *dev_v, *dev_f, *dev_g, *dev_scatch;
+    float *dev_u, *dev_v, *dev_f, *dev_g, *dev_scratch;
     cudaMalloc( (void**)&dev_u, N );
     cudaMalloc( (void**)&dev_v, N );
     cudaMalloc( (void**)&dev_f, N );

@@ -426,12 +426,12 @@ int central2d_xrun(float* restrict u, float* restrict v,
 
     // Allocate in GPU
     int N = nfield * nx_all * ny_all * sizeof(float);
-    float *dev_u, *dev_v, *dev_f, *dev_g, *dev_scatch, *dev_cxy;
+    float *dev_u, *dev_v, *dev_f, *dev_g, *dev_scratch, *dev_cxy;
     cudaMalloc( (void**)&dev_u, N );
     cudaMalloc( (void**)&dev_v, N );
     cudaMalloc( (void**)&dev_f, N );
     cudaMalloc( (void**)&dev_g, N );
-    cudaMalloc( (void**)&dev_scatch, 6*nx_all*sizeof(float) );
+    cudaMalloc( (void**)&dev_scratch, 6*nx_all*sizeof(float) );
     cudaMalloc( (void**)&dev_cxy, 2*sizeof(float) );
     // Copy from CPU to GPU
     // cudaMemcpy( dev_u, u, N, cudaMemcpyHostToDevice);
