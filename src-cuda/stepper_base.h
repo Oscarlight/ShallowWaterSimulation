@@ -108,7 +108,7 @@ int central2d_run(central2d_t* sim, float tfinal);
  */
 void central2d_periodic(float* u, int nx, int ny, int ng, int nfield);
 
-static void central2d_predict(float* restrict v,
+void central2d_predict(float* restrict v,
                        float* restrict scratch,
                        const float* restrict u,
                        const float* restrict f,
@@ -116,7 +116,7 @@ static void central2d_predict(float* restrict v,
                        float dtcdx2, float dtcdy2,
                        int nx, int ny, int nfield);
 
-static void central2d_correct(float* restrict v,
+void central2d_correct(float* restrict v,
                        float* restrict scratch,
                        const float* restrict u,
                        const float* restrict f,

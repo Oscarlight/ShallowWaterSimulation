@@ -208,7 +208,7 @@ void limited_derivk(float* restrict du,
 
 
 // Predictor half-step
-static
+// static
 void central2d_predict(float* restrict v,
                        float* restrict scratch,
                        const float* restrict u,
@@ -258,7 +258,7 @@ void central2d_correct_sd(float* restrict s,
 
 
 // Corrector
-static
+// static
 void central2d_correct(float* restrict v,
                        float* restrict scratch,
                        const float* restrict u,
