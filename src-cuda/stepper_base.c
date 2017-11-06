@@ -212,7 +212,7 @@ void limited_derivk(float* restrict du,
 
 // Predictor half-step
 // static
-void central2d_predict(float* restrict v,
+void central2d_predict_base(float* restrict v,
                        float* restrict scratch,
                        const float* restrict u,
                        const float* restrict f,
@@ -339,7 +339,7 @@ void central2d_step(float* restrict u, float* restrict v,
 
     flux(f, g, u, nx_all * ny_all, nx_all * ny_all);
 
-    central2d_predict(v, scratch, u, f, g, dtcdx2, dtcdy2,
+    central2d_predict_base(v, scratch, u, f, g, dtcdx2, dtcdy2,
                       nx_all, ny_all, nfield);
 
     // Flux values of f and g at half step
@@ -407,7 +407,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
 }
 
 
-int central2d_run(central2d_t_base* sim, float tfinal)
+int central2d_run_base(central2d_t_base* sim, float tfinal)
 {
     return central2d_xrun(sim->u, sim->v, sim->scratch,
                           sim->f, sim->g,
