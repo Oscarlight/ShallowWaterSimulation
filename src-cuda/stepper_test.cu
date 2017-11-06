@@ -84,10 +84,10 @@ int main(int argc, char** argv){
     cudaMalloc( (void**)&dev_g, N*sizeof(float) );
     cudaMalloc( (void**)&dev_scratch, 6*nx_all*sizeof(float) );
 
-    cudaMemcpy( dev_u, u, N, cudaMemcpyHostToDevice);
-    cudaMemcpy( dev_v, v, N, cudaMemcpyHostToDevice);
-    cudaMemcpy( dev_f, f, N, cudaMemcpyHostToDevice);
-    cudaMemcpy( dev_g, g, N, cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_u, u, N*sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_v, v, N*sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_f, f, N*sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_g, g, N*sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy( dev_scratch, scratch, 
       6*nx_all*sizeof(float), 
       cudaMemcpyHostToDevice
@@ -117,11 +117,11 @@ int main(int argc, char** argv){
             nfield, nx_all, ny_all // CPU
     );
    	printf("GPUassert: %s\n", cudaGetErrorString(cudaGetLastError()));
-    cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
-    cudaMemcpy( v, dev_v, N, cudaMemcpyDeviceToHost);
+    cudaMemcpy( u, dev_u, N*sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy( v, dev_v, N*sizeof(float), cudaMemcpyDeviceToHost);
     cudaMemcpy( scratch, dev_scratch, 6*nx_all*sizeof(float), cudaMemcpyDeviceToHost);
-    cudaMemcpy( f, dev_f, N, cudaMemcpyDeviceToHost);
-    cudaMemcpy( g, dev_g, N, cudaMemcpyDeviceToHost);
+    cudaMemcpy( f, dev_f, N*sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy( g, dev_g, N*sizeof(float), cudaMemcpyDeviceToHost);
 
     cudaFree(dev_u);
     cudaFree(dev_v);
