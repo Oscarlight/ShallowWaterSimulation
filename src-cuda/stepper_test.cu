@@ -95,7 +95,12 @@ int main(int argc, char** argv){
     cudaMemcpy(dev_nfield, &nfield, sizeof(int), cudaMemcpyHostToDevice);
 
     central2d_predict_wrapper(
-    		dev_v,dev_scratch,dev_u,dev_f,dev_g,dev_dtcdx2,dev_dtcdy2,
+    		dev_v,
+    		dev_scratch,
+    		dev_u,
+    		dev_f,
+    		dev_g,
+    		dev_dtcdx2,dev_dtcdy2,
             dev_nx_all,dev_ny_all,dev_nfield,
             nx_all, ny_all
     );

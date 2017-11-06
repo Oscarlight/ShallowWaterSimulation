@@ -120,7 +120,7 @@ void central2d_predict_wrapper(
        const float* dev_g,
        float* dev_dtcdx2, float* dev_dtcdy2,
        int* dev_nx_all, int* dev_ny_all, int* dev_nfield,
-       int nx_all, int ny_all,
-);
+       int nx_all, int ny_all);
+
 //ldoc off
 #endif /* STEPPER_H */
