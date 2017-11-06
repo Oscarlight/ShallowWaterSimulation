@@ -244,7 +244,8 @@ void central2d_predict_cuda(
     gy[ix] = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
     int offset_ix = (k*ny+iy)*nx+ix;
     dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];  
-    printf(">>> (k, ix, iy): %d, %d, %d \t (dev_u[offset_ix], fx[ix], gy[ix]) %f, %f, %f \n", dev_u[offset_ix], fx[ix], gy[ix]);   
+    printf(">>> (k, ix, iy): %d, %d, %d \t (dev_u[offset_ix], fx[ix], gy[ix]) %f, %f, %f \n", 
+      k, ix, iy, dev_u[offset_ix], fx[ix], gy[ix]);   
 }
 
 static
