@@ -243,6 +243,7 @@ void central2d_predict_cuda(
 
     // printf(">>> %f, %d\n", 
     //   dev_g[ix+nx+offset], ix+nx+offset);
+    printf(dev_u[0])
 
     fx[ix] = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
     gy[ix] = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
