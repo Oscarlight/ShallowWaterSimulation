@@ -17,12 +17,12 @@ int main(int argc, char** argv){
     float* v  = u + N;
     float* f  = u + 2*N;
     float* g  = u + 3*N;
-    float* scratch = u + 4*N
+    float* scratch = u + 4*N;
     int i;
     for (i = 0; i < 4*N + 6*nx_all; i++)
     	u[i] = 0.5;
 
     float dtcdx2 = 0.3, dtcdy2 = 0.3;
 	central2d_predict(v, scratch, u, f, g, dtcdx2, dtcdy2,
-                  nx, ny, nfield)
+                  nx, ny, nfield);
 }
