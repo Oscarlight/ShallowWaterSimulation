@@ -231,8 +231,8 @@ void central2d_predict_cuda(
                        int* dev_nx, int* dev_ny,
                        int* dev_k)
 {
-    int dtcdx2 = *dev_dtcdx2;
-    int dtcdy2 = *dev_dtcdy2;
+    float dtcdx2 = *dev_dtcdx2;
+    float dtcdy2 = *dev_dtcdy2;
     int nx = *dev_nx;
     int ny = *dev_ny;
     int k = *dev_k;
