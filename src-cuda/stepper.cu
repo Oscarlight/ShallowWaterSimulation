@@ -209,7 +209,7 @@ void limited_derivk(float* restrict du,
  * It also makes it more obvious that we only need four rows worth
  * of scratch space.
  */
-static
+__device__ static
 void print_array(const float* array, int len) {
   for(int i = 0; i < len; i++) {
       printf("%.2f ", array[i]);    
