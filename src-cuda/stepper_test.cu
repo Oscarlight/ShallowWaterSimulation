@@ -101,7 +101,7 @@ int main(int argc, char** argv){
 
     cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( v, dev_v, N, cudaMemcpyDeviceToHost);
-    cudaMemcpy( scatch, dev_scratch, 6*nx_all*sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy( scratch, dev_scratch, 6*nx_all*sizeof(float), cudaMemcpyDeviceToHost);
     cudaMemcpy( f, dev_f, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( g, dev_g, N, cudaMemcpyDeviceToHost);
 
