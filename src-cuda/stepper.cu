@@ -245,8 +245,7 @@ void central2d_predict_cuda(
     const unsigned int tid = ((gridDim.x * blockDim.x) * idy) + idx;
 
     int iy = tid / (ny-2) + 1;
-    int ix = tid % (nx-2) + 1;
-    // printf(">>> (u[0]): %f \n", dev_u[0]);     
+    int ix = tid % (nx-2) + 1;   
     int offset = (k*ny+iy)*nx;
 
     // printf(">>> %f, %d\n", 
@@ -254,13 +253,12 @@ void central2d_predict_cuda(
     // printf(">>> (k, ix, iy): %d, %d, %d \t %f, %f, %f, %d\n", 
     //   k, ix, iy, dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset], offset);
     // print_array(dev_u, 25);
-    printf("dtcdx2: %f\n", dtcdx2);
+    // printf("dtcdx2: %f\n", dtcdx2);
     // printf(">>> (k, ix, iy, idx, dev_u[idx]): %d, %d, %d, %d, %f \n", k, ix, iy, 0, dev_u[0]);
 
     fx[ix] = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
     gy[ix] = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
     int offset_ix = (k*ny+iy)*nx+ix;
-    // printf("offset_ix : %d\n", offset_ix);
     dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];  
 
     // printf(">>> (k, ix, iy, offset_ix, dev_u[offset_ix]): %d, %d, %d, %d, %f \n", 
@@ -269,8 +267,8 @@ void central2d_predict_cuda(
     //   k, ix, iy, dev_u[offset_ix], fx[ix], gy[ix]); 
     // printf(">>> (k, ix, iy): %d, %d, %d \t %f, %d\n", 
     //      k, ix, iy, dev_v[offset_ix], offset_ix);
-    printf(">>> (k, ix, iy): %d, %d, %d \t %f, %d\n", 
-        k, ix, iy, dtcdx2 * fx[ix], ix);  
+    printf(">>> (k, ix, iy): %d, %d, %d \t %f, %f, %f\n", 
+        k, ix, iy, dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);  
 }
 
 static
