@@ -17,7 +17,7 @@ void print_array(float* array, int len) {
 }
 
 int main(int argc, char** argv){
-	int nx = 3, ny = 3, ng = 1, nfield = 1;
+	int nx = 4, ny = 4, ng = 1, nfield = 1;
 	int nx_all = nx + 2*ng;
     int ny_all = ny + 2*ng;
 	int nc = nx_all * ny_all;
@@ -109,7 +109,7 @@ int main(int argc, char** argv){
     cudaMemcpy( f, dev_f, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( g, dev_g, N, cudaMemcpyDeviceToHost);
 
-    print_array(u, N);
+    // print_array(u, N);
    	printf("Check correctness\n");
 	for (i = 0; i < 4*N + 6*nx_all; i++) {
     	if (u[i] != u_ture[i]) {
