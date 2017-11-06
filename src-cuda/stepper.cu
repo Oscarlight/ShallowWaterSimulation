@@ -250,11 +250,13 @@ void central2d_predict_cuda(
 
     // printf(">>> %f, %d\n", 
     //   dev_g[ix+nx+offset], ix+nx+offset);
-    print_array(dev_u, 25);
+    // print_array(dev_u, 25);
+    print("k : %d\n", k);
 
     fx[ix] = limdiff(dev_f[ix-1+offset], dev_f[ix+offset], dev_f[ix+1+offset]);
     gy[ix] = limdiff(dev_g[ix-nx+offset], dev_g[ix+offset], dev_g[ix+nx+offset]);
     int offset_ix = (k*ny+iy)*nx+ix;
+    print("offset_ix : %d\n", offset_ix);
     dev_v[offset_ix] = dev_u[offset_ix] - dtcdx2 * fx[ix] - dtcdy2 * gy[ix];  
     printf(">>> (k, ix, iy): %d, %d, %d \t (dev_u[offset_ix], fx[ix], gy[ix]) %f, %f, %f \n", 
       k, ix, iy, dev_u[offset_ix], fx[ix], gy[ix]);   
@@ -291,11 +293,11 @@ void central2d_predict(float* restrict dev_v,
 // Expose for test purpose
 extern "C"
 void central2d_predict_wrapper(
-                       float* dev_v,
-                       float* dev_scratch,
-                       const float* dev_u,
-                       const float* dev_f,
-                       const float* dev_g,
+                       float* restrict dev_v,
+                       float* restrict dev_scratch,
+                       const float* restrict dev_u,
+                       const float* restrict dev_f,
+                       const float* restrict dev_g,
                        float* dev_dtcdx2, float* dev_dtcdy2,
                        int* dev_nx, int* dev_ny, 
                        int nfield, int nx, int ny)
