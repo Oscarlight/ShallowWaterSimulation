@@ -17,7 +17,7 @@ void print_array(float* array, int len) {
 }
 
 int main(int argc, char** argv){
-	int nx = 3, ny = 3, ng = 1, nfield = 2;
+	int nx = 10, ny = 10, ng = 4, nfield = 3;
 	int nx_all = nx + 2*ng;
     int ny_all = ny + 2*ng;
 	int nc = nx_all * ny_all;
@@ -45,7 +45,7 @@ int main(int argc, char** argv){
     }
 
 	// reset
-	printf("Test linearized series code. ");
+	printf("Test linearized series code. \n ");
     for (i = 0; i < 4*N + 6*nx_all; i++) {
     	u[i] = cos((float)i/float(4*N + 6*nx_all));
     }
