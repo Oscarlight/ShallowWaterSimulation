@@ -44,9 +44,13 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
 }
 
 int main(int argc, char** argv){
+	if(argc<=2) {
+        printf("You did not feed me arguments, I will die now :( ...");
+        exit(1);
+    }
 	cudaEvent_t start,stop;
 	float ms;
-	const int nx = 128, ny = 128;
+	const int nx = atoi(argv[1]), ny = atoi(argv[2]);
 	const int ncell = nx * ny;
 	const int field_stride = nx * ny;
 	float cxy[2] = {1.0, 2.0};
