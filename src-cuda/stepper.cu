@@ -16,6 +16,13 @@ extern "C" {
  *
  * ### Structure allocation
  */
+ void print_array(float* array, int len) {
+  for(int i = 0; i < len; i++) {
+      printf("%.2f ", array[i]);    
+  }
+  printf("\n");
+}
+
 extern "C"
 central2d_t* central2d_init(float w, float h, int nx, int ny,
                             int nfield, flux_t flux, speed_t speed,
@@ -512,7 +519,6 @@ int central2d_xrun(float* restrict u, float* restrict v,
     cudaMalloc( (void**)&dev_ny, sizeof(int) );
 
     while (!done) {
-        printf("Enter");
         float cxy[2] = {1.0e-15f, 1.0e-15f};
 
         // Run on CPU, change u
@@ -544,9 +550,9 @@ int central2d_xrun(float* restrict u, float* restrict v,
                        dt, dx, dy);
         t += 2*dt;
         nstep += 2;
-
         // It seems we only need u, need to confirm. 
         cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
+        print_array(u, nx_all * ny_all)
     }  
     cudaFree(dev_u);
     cudaFree(dev_v);
@@ -564,7 +570,6 @@ int central2d_xrun(float* restrict u, float* restrict v,
 extern "C"
 int central2d_run(central2d_t* sim, float tfinal)
 {
-    printf(">> Here!! \n");
     return central2d_xrun(sim->u, sim->v, sim->scratch,
                           sim->f, sim->g,
                           sim->nx, sim->ny, sim->ng,

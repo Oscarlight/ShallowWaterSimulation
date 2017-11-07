@@ -1,7 +1,7 @@
 --
 -- Basic tests
 --
-nx = tonumber(args[2]) or 200
+nx = tonumber(args[2]) or 3
 
 pond = {
   init = function(x,y) return 1, 0, 0 end,
@@ -32,7 +32,7 @@ wave = {
     return 1.0 + 0.2 * math.sin(math.pi * x), 1, 0
   end,
   out = "wave.out",
-  frames = 100,
+  frames = 10, --100
   nx = nx
 }
 
