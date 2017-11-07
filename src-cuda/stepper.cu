@@ -481,7 +481,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
     // for speed function only
     float *dev_cxy, cxy;
     // cudaMallocManaged( (void**)&cxy, 2*sizeof(float));
-    malloc( (void**)&dev_cxy, 2*sizeof(float));
+    malloc( (void**)&cxy, 2*sizeof(float));
     cudaMalloc( (void**)&dev_cxy, 2*sizeof(float));
     while (!done) {
         cxy[0] = 1.0e-15f;
@@ -493,7 +493,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
         // Run on GPU, change dev_cxy
         speed(cxy, u, nx_all, ny_all, nx_all * ny_all); // GPU
         cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost);
-        
+
         float dt = cfl / fmaxf(cxy[0]/dx, cxy[1]/dy);
         if (t + 2*dt >= tfinal) {
             dt = (tfinal-t)/2;
