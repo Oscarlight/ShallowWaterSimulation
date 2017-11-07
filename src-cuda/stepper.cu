@@ -364,10 +364,13 @@ void central2d_correct(float* restrict v,
         const float* restrict gk = g + k*ny*nx;
         printf("Flag8 : %d \n", k);
         limited_deriv1(ux+1, uk+ylo*nx+1, nx-2);
+        printf("Flag9 : %d \n", k);
         limited_derivk(uy+1, uk+ylo*nx+1, nx-2, nx);
+        printf("Flag10 : %d \n", k);
         central2d_correct_sd(s1, d1, ux, uy,
                              uk + ylo*nx, fk + ylo*nx, gk + ylo*nx,
                              dtcdx2, dtcdy2, xlo, xhi);
+        printf("Flag11 : %d \n", k);
 
         for (int iy = ylo; iy < yhi; ++iy) {
 
