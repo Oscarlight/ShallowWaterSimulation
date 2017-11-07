@@ -1,7 +1,3 @@
-extern "C" {
-#include "stepper.cuh"
-#include "shallow2d.cuh"
-}
 #ifdef _OPENMP
 #include <omp.h>
 #elif defined SYSTIME
@@ -14,6 +10,10 @@ extern "C" {
 
 #include <assert.h>
 #include <stdio.h>
+extern "C" {
+#include "stepper.cuh"
+#include "shallow2d.cuh"
+}
 
 //ldoc on
 /**
