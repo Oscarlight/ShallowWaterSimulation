@@ -232,7 +232,7 @@ int run_sim(lua_State* L)
 // #elif defined SYSTIME
         struct timeval t0, t1;
         gettimeofday(&t0, NULL);
-        printf(">> Flag")
+        printf(">> Flag");
         int nstep = central2d_run(sim, ftime);
         gettimeofday(&t1, NULL);
         double elapsed = (t1.tv_sec-t0.tv_sec) + (t1.tv_usec-t0.tv_usec)*1e-6;
