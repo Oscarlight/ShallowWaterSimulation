@@ -437,6 +437,7 @@ void central2d_step(float* restrict u,
         flux(f+jj, g+jj, v+jj, 1, nx_all-2, nx_all * ny_all);
     }
     printf("Flag6 \n");
+    cudaDeviceSynchronize()
     // Run on CPU, change dev_v and dev_scratch
     central2d_correct(v+io*(nx_all+1), scratch, u, f, g, dtcdx2, dtcdy2,
                       ng-io, nx+ng-io,
