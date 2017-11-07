@@ -491,7 +491,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
         // Run on GPU, change dev_cxy
         speed(dev_cxy, u, nx_all, ny_all, nx_all * ny_all); // GPU
         cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost);
-
+        print_array(cxy, 2);
         float dt = cfl / fmaxf(cxy[0]/dx, cxy[1]/dy);
         if (t + 2*dt >= tfinal) {
             dt = (tfinal-t)/2;
@@ -511,7 +511,8 @@ int central2d_xrun(float* restrict u, float* restrict v,
         t += 2*dt;
         nstep += 2;
         // print_array(u, nx_all * ny_all);
-    }  
+    } 
+    cudaFree(dev_cxy);
     return nstep;
 }
 
