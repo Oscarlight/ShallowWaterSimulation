@@ -479,15 +479,21 @@ int central2d_xrun(float* restrict u, float* restrict v,
     cudaMalloc( (void**)&dev_ny, sizeof(int) );
 
     // for speed function only
-    float *cxy;
-    cudaMallocManaged( (void**)&cxy, 2*sizeof(float));
+    float *dev_cxy, cxy;
+    // cudaMallocManaged( (void**)&cxy, 2*sizeof(float));
+    malloc( (void**)&dev_cxy, 2*sizeof(float));
+    cudaMalloc( (void**)&dev_cxy, 2*sizeof(float));
     while (!done) {
         cxy[0] = 1.0e-15f;
         cxy[1] = 1.0e-15f;
         // Run on CPU, change u
         central2d_periodic(u, nx, ny, ng, nfield); // CPU
+
+        cudaMemcpy( dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice);
         // Run on GPU, change dev_cxy
         speed(cxy, u, nx_all, ny_all, nx_all * ny_all); // GPU
+        cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost);
+        
         float dt = cfl / fmaxf(cxy[0]/dx, cxy[1]/dy);
         if (t + 2*dt >= tfinal) {
             dt = (tfinal-t)/2;
