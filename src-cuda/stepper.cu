@@ -489,7 +489,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
 
         cudaMemcpy( dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice);
         // Run on GPU, change dev_cxy
-        speed(cxy, u, nx_all, ny_all, nx_all * ny_all); // GPU
+        speed(dev_cxy, u, nx_all, ny_all, nx_all * ny_all); // GPU
         cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost);
 
         float dt = cfl / fmaxf(cxy[0]/dx, cxy[1]/dy);
