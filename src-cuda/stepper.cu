@@ -503,7 +503,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
                        dt, dx, dy);
         t += 2*dt;
         nstep += 2;
-        print_array(u, nx_all * ny_all);
+        // print_array(u, nx_all * ny_all);
     }  
     return nstep;
 }
