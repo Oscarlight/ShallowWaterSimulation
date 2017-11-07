@@ -408,12 +408,13 @@ void central2d_step(float* restrict u,
     // Run on GPU, change dev_f and dev_g
     flux(dev_f, dev_g, dev_u, nx_all, ny_all, nx_all * ny_all);
 
-    // Run on GPU, change dev_v and dev_scratch
+    
     cudaMemcpy(dev_dtcdx2, &dtcdx2, sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_dtcdy2, &dtcdy2, sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
 
+    // Run on GPU, change dev_v and dev_scratch
     central2d_predict(
         dev_v,
         dev_scratch,
@@ -432,22 +433,20 @@ void central2d_step(float* restrict u,
         flux(dev_f+jj, dev_g+jj, dev_v+jj, 1, nx_all-2, nx_all * ny_all);
     }
 
-    // Run on CPU, change dev_v and dev_scratch
+    // Copy to CPU
     int N = nfield * nx_all * ny_all * sizeof(float);
     cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( v, dev_v, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( scratch, dev_scratch, 6*nx_all*sizeof(float), cudaMemcpyDeviceToHost);
     cudaMemcpy( f, dev_f, N, cudaMemcpyDeviceToHost);
     cudaMemcpy( g, dev_g, N, cudaMemcpyDeviceToHost);
-    // TODO: Parallelize this!
+    // Run on CPU, change dev_v and dev_scratch
     central2d_correct(v+io*(nx_all+1), scratch, u, f, g, dtcdx2, dtcdy2,
                       ng-io, nx+ng-io,
                       ng-io, ny+ng-io,
                       nx_all, ny_all, nfield);
     // copy back to GPU
     cudaMemcpy( dev_v, v, N, cudaMemcpyHostToDevice);
-    // cudaMemcpy( dev_f, f, N, cudaMemcpyHostToDevice);
-    // cudaMemcpy( dev_g, g, N, cudaMemcpyHostToDevice);
     cudaMemcpy( dev_scratch, scratch, 
       6*nx_all*sizeof(float), 
       cudaMemcpyHostToDevice

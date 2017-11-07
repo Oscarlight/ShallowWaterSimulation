@@ -87,7 +87,7 @@ int main(int argc, char** argv){
 	}
 
 	// Execute on GPU: using function pointer
-	bool UNIFIED_MEM = false;
+	bool UNIFIED_MEM = true;
 	// device copies of FU, GU, U
     float *dev_FU, *dev_GU, *dev_U, *dev_cxy;
     int size = ncell*3*sizeof(float);
