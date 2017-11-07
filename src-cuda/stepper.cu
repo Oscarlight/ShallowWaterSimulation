@@ -163,7 +163,7 @@ float limdiff(float um, float u0, float up) {
 }
 
 // Compute limited derivs
-static inline
+__host__ static inline
 void limited_deriv1(float* restrict du,
                     const float* restrict u,
                     int ncell)
@@ -174,7 +174,7 @@ void limited_deriv1(float* restrict du,
 
 
 // Compute limited derivs across stride
-static inline
+__host__ static inline
 void limited_derivk(float* restrict du,
                     const float* restrict u,
                     int ncell, int stride)
