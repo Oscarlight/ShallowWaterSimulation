@@ -247,7 +247,7 @@ int run_sim(lua_State* L)
     printf("Total compute time: %e\n", tcompute);
 
     viz_close(viz);
-    central2d_free(sim);
+    // central2d_free(sim);
     return 0;
 }
 
