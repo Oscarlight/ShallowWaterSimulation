@@ -406,14 +406,15 @@ void central2d_step(float* restrict u,
     int ny_all = ny + 2*ng;
     float dtcdx2 = 0.5 * dt / dx;
     float dtcdy2 = 0.5 * dt / dy;
-
+    printf("Flag2 \n");
     // Run on GPU, change dev_f and dev_g
     flux(f, g, u, nx_all, ny_all, nx_all * ny_all);
-
+    printf("Flag3 \n");
     cudaMemcpy(dev_dtcdx2, &dtcdx2, sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_dtcdy2, &dtcdy2, sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
+    printf("Flag4 \n");
     // Run on GPU, change dev_v and dev_scratch
     central2d_predict(
         v,
@@ -425,14 +426,14 @@ void central2d_step(float* restrict u,
         dev_nx,dev_ny,
         nfield, nx_all, ny_all
     );
-
+    printf("Flag5 \n");
     // Flux values of f and g at half step
     for (int iy = 1; iy < ny_all-1; ++iy) {
         int jj = iy*nx_all+1;
         // Run on GPU, change dev_f and dev_g
         flux(f+jj, g+jj, v+jj, 1, nx_all-2, nx_all * ny_all);
     }
-
+    printf("Flag6 \n");
     // Run on CPU, change dev_v and dev_scratch
     central2d_correct(v+io*(nx_all+1), scratch, u, f, g, dtcdx2, dtcdy2,
                       ng-io, nx+ng-io,
@@ -479,18 +480,18 @@ int central2d_xrun(float* restrict u, float* restrict v,
     cudaMalloc( (void**)&dev_ny, sizeof(int) );
 
     // for speed function only
-    // float *dev_cxy;
+    float *dev_cxy;
     // cudaMallocManaged( (void**)&cxy, 2*sizeof(float));
-    // cudaMalloc( (void**)&dev_cxy, 2*sizeof(float));
+    cudaMalloc( (void**)&dev_cxy, 2*sizeof(float));
     while (!done) {
         float cxy[2] = {1.0e-15f, 1.0e-15f};
         // Run on CPU, change u
         central2d_periodic(u, nx, ny, ng, nfield); // CPU
 
-        // cudaMemcpy( dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice);
+        cudaMemcpy( dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice);
         // Run on GPU, change dev_cxy
         speed(cxy, u, nx_all, ny_all, nx_all * ny_all); // GPU
-        // cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost);
+        cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost);
         print_array(cxy, 2);
         float dt = cfl / fmaxf(cxy[0]/dx, cxy[1]/dy);
         if (t + 2*dt >= tfinal) {
@@ -503,6 +504,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
                        0, nx+4, ny+4, ng-2,
                        nfield, flux, speed,
                        dt, dx, dy);
+        printf("Flag1 \n");
         central2d_step(v, u, scratch, f, g,
                        dev_dtcdx2, dev_dtcdy2, dev_nx, dev_ny,
                        1, nx, ny, ng,
@@ -512,7 +514,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
         nstep += 2;
         // print_array(u, nx_all * ny_all);
     } 
-    // cudaFree(dev_cxy);
+    cudaFree(dev_cxy);
     return nstep;
 }
 
