@@ -168,7 +168,6 @@ void limited_deriv1(float* restrict du,
                     const float* restrict u,
                     int ncell)
 {
-    printf("Flag9: %f, %f \n", du[0], u[0]);
     for (int i = 0; i < ncell; ++i)
         du[i] = limdiff(u[i-1], u[i], u[i+1]);
 }
@@ -349,7 +348,7 @@ void central2d_correct(float* restrict v,
 {
     assert(0 <= xlo && xlo < xhi && xhi <= nx);
     assert(0 <= ylo && ylo < yhi && yhi <= ny);
-    printf("Flag7 \n");
+    // printf("Flag7 \n");
     float* restrict ux = scratch;
     float* restrict uy = scratch +   nx;
     float* restrict s0 = scratch + 2*nx;
@@ -363,15 +362,15 @@ void central2d_correct(float* restrict v,
         const float* restrict uk = u + k*ny*nx;
         const float* restrict fk = f + k*ny*nx;
         const float* restrict gk = g + k*ny*nx;
-        printf("Flag8 : %d \n", k);
+        // printf("Flag8 : %d \n", k);
         limited_deriv1(ux+1, uk+ylo*nx+1, nx-2);
-        printf("Flag9 : %d \n", k);
+        // printf("Flag9 : %d \n", k);
         limited_derivk(uy+1, uk+ylo*nx+1, nx-2, nx);
-        printf("Flag10 : %d \n", k);
+        // printf("Flag10 : %d \n", k);
         central2d_correct_sd(s1, d1, ux, uy,
                              uk + ylo*nx, fk + ylo*nx, gk + ylo*nx,
                              dtcdx2, dtcdy2, xlo, xhi);
-        printf("Flag11 : %d \n", k);
+        // printf("Flag11 : %d \n", k);
 
         for (int iy = ylo; iy < yhi; ++iy) {
 
@@ -410,15 +409,15 @@ void central2d_step(float* restrict u,
     int ny_all = ny + 2*ng;
     float dtcdx2 = 0.5 * dt / dx;
     float dtcdy2 = 0.5 * dt / dy;
-    printf("Flag2 \n");
+    // printf("Flag2 \n");
     // Run on GPU, change dev_f and dev_g
     flux(f, g, u, nx_all, ny_all, nx_all * ny_all);
-    printf("Flag3 \n");
+    // printf("Flag3 \n");
     cudaMemcpy(dev_dtcdx2, &dtcdx2, sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_dtcdy2, &dtcdy2, sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
-    printf("Flag4 \n");
+    // printf("Flag4 \n");
     // Run on GPU, change dev_v and dev_scratch
     central2d_predict(
         v,
@@ -430,14 +429,14 @@ void central2d_step(float* restrict u,
         dev_nx,dev_ny,
         nfield, nx_all, ny_all
     );
-    printf("Flag5 \n");
+    // printf("Flag5 \n");
     // Flux values of f and g at half step
     for (int iy = 1; iy < ny_all-1; ++iy) {
         int jj = iy*nx_all+1;
         // Run on GPU, change dev_f and dev_g
         flux(f+jj, g+jj, v+jj, 1, nx_all-2, nx_all * ny_all);
     }
-    printf("Flag6 \n");
+    // printf("Flag6 \n");
     cudaDeviceSynchronize();
     // Run on CPU, change v and scratch
     central2d_correct(v+io*(nx_all+1), scratch, u, f, g, dtcdx2, dtcdy2,
@@ -509,7 +508,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
                        0, nx+4, ny+4, ng-2,
                        nfield, flux, speed,
                        dt, dx, dy);
-        printf("Flag1 \n");
+        // printf("Flag1 \n");
         central2d_step(v, u, scratch, f, g,
                        dev_dtcdx2, dev_dtcdy2, dev_nx, dev_ny,
                        1, nx, ny, ng,
