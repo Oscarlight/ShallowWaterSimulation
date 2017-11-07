@@ -5,10 +5,10 @@ include ../config/Makefile.in.$(PLATFORM)
 # Main driver and sample run
 
 lshallow: ldriver.o shallow2d.o stepper.o
-	$(NVCC) -o $@ $^ $(NVCCLIBS)
+	$(NVCC) $(LUA_CFLAGS) -o $@ $^ $(NVCCLIBS) $(LUA_LIBS)
 
 ldriver.o: ldriver.c stepper.cuh shallow2d.cuh
-	$(NVCC) -c $<
+	$(NVCC) $(LUA_CFLAGS) -c $<
 
 # ===
 # CUDA Test Runs
