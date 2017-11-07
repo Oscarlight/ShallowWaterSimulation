@@ -348,7 +348,7 @@ void central2d_correct(float* restrict v,
 {
     assert(0 <= xlo && xlo < xhi && xhi <= nx);
     assert(0 <= ylo && ylo < yhi && yhi <= ny);
-
+    printf("Flag7 \n");
     float* restrict ux = scratch;
     float* restrict uy = scratch +   nx;
     float* restrict s0 = scratch + 2*nx;
@@ -362,7 +362,7 @@ void central2d_correct(float* restrict v,
         const float* restrict uk = u + k*ny*nx;
         const float* restrict fk = f + k*ny*nx;
         const float* restrict gk = g + k*ny*nx;
-
+        printf("Flag8 : %d \n", k);
         limited_deriv1(ux+1, uk+ylo*nx+1, nx-2);
         limited_derivk(uy+1, uk+ylo*nx+1, nx-2, nx);
         central2d_correct_sd(s1, d1, ux, uy,
