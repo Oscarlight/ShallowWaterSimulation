@@ -1,8 +1,14 @@
-#ifdef _OPENMP
-#include <omp.h>
-#elif defined SYSTIME
+extern "C" {
+#include "stepper.cuh"
+#include "shallow2d.cuh"
+}
+
+// #ifdef _OPENMP
+// #include <omp.h>
+// #elif defined SYSTIME
+// #include <sys/time.h>
+// #endif
 #include <sys/time.h>
-#endif
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -10,11 +16,6 @@
 
 #include <assert.h>
 #include <stdio.h>
-
-extern "C" {
-#include "stepper.cuh"
-#include "shallow2d.cuh"
-}
 
 //ldoc on
 /**
