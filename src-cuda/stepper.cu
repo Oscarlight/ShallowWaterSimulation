@@ -168,6 +168,7 @@ void limited_deriv1(float* restrict du,
                     const float* restrict u,
                     int ncell)
 {
+    printf("Flag9: %f, %f \n", du[0], u[0]);
     for (int i = 0; i < ncell; ++i)
         du[i] = limdiff(u[i-1], u[i], u[i+1]);
 }
