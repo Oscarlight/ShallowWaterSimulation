@@ -96,7 +96,7 @@ int main(int argc, char** argv){
 	    gpuErrchk(cudaMalloc( (void**)&dev_GU, size ));
 	    gpuErrchk(cudaMalloc( (void**)&dev_U,  size ));
 	    gpuErrchk(cudaMalloc( (void**)&dev_cxy, 2*sizeof(float) ));
-		copy the reseted data to GPU
+		// copy the reseted data to GPU
 		gpuErrchk(cudaMemcpy( dev_FU, FU, size, cudaMemcpyHostToDevice ));
 	    gpuErrchk(cudaMemcpy( dev_GU, GU, size, cudaMemcpyHostToDevice ));
 	    gpuErrchk(cudaMemcpy( dev_U,  U,  size, cudaMemcpyHostToDevice ));
