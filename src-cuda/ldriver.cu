@@ -2,13 +2,12 @@ extern "C" {
 #include "stepper.cuh"
 #include "shallow2d.cuh"
 }
-
-// #ifdef _OPENMP
-// #include <omp.h>
-// #elif defined SYSTIME
-// #include <sys/time.h>
-// #endif
+#define SYSTIME 1
+#ifdef _OPENMP
+#include <omp.h>
+#elif defined SYSTIME
 #include <sys/time.h>
+#endif
 
 #include <lua.h>
 #include <lauxlib.h>
