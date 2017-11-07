@@ -453,7 +453,10 @@ void central2d_step(float* restrict u,
                       ng-io, ny+ng-io,
                       nx_all, ny_all, nfield);
     // copy back to GPU
+    cudaMemcpy( dev_u, u, N, cudaMemcpyHostToDevice);
     cudaMemcpy( dev_v, v, N, cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_f, f, N, cudaMemcpyHostToDevice);
+    cudaMemcpy( dev_g, g, N, cudaMemcpyHostToDevice);
     cudaMemcpy( dev_scratch, scratch, 
       6*nx_all*sizeof(float), 
       cudaMemcpyHostToDevice
@@ -529,7 +532,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
         // Run on GPU, change dev_cxy
         speed(dev_cxy, dev_u, nx_all, ny_all, nx_all * ny_all); // GPU
         cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost);
-        cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
+        // cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
         
         float dt = cfl / fmaxf(cxy[0]/dx, cxy[1]/dy);
         if (t + 2*dt >= tfinal) {
