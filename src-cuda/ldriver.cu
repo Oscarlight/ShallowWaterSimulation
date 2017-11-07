@@ -2,12 +2,12 @@ extern "C" {
 #include "stepper.cuh"
 #include "shallow2d.cuh"
 }
-#define SYSTIME 1
-#ifdef _OPENMP
-#include <omp.h>
-#elif defined SYSTIME
+
+// #ifdef _OPENMP
+// #include <omp.h>
+// #elif defined SYSTIME
 #include <sys/time.h>
-#endif
+// #endif
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -224,21 +224,21 @@ int run_sim(lua_State* L)
 
     double tcompute = 0;
     for (int i = 0; i < frames; ++i) {
-#ifdef _OPENMP
-        double t0 = omp_get_wtime();
-        int nstep = central2d_run(sim, ftime);
-        double t1 = omp_get_wtime();
-        double elapsed = t1-t0;
-#elif defined SYSTIME
+// #ifdef _OPENMP
+//         double t0 = omp_get_wtime();
+//         int nstep = central2d_run(sim, ftime);
+//         double t1 = omp_get_wtime();
+//         double elapsed = t1-t0;
+// #elif defined SYSTIME
         struct timeval t0, t1;
         gettimeofday(&t0, NULL);
         int nstep = central2d_run(sim, ftime);
         gettimeofday(&t1, NULL);
         double elapsed = (t1.tv_sec-t0.tv_sec) + (t1.tv_usec-t0.tv_usec)*1e-6;
-#else
-        int nstep = central2d_run(sim, ftime);
-        double elapsed = 0;
-#endif
+// #else
+//         int nstep = central2d_run(sim, ftime);
+//         double elapsed = 0;
+// #endif
         solution_check(sim);
         tcompute += elapsed;
         printf("  Time: %e (%e for %d steps)\n", elapsed, elapsed/nstep, nstep);
