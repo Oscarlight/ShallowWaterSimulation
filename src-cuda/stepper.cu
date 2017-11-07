@@ -415,6 +415,10 @@ void central2d_step(float* restrict u,
     // Run on GPU, change dev_f and dev_g
     flux(f, g, u, nx_all, ny_all, nx_all * ny_all);
 
+    cudaMemcpy(dev_dtcdx2, &dtcdx2, sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_dtcdy2, &dtcdy2, sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_nx, &nx_all, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_ny, &ny_all, sizeof(int), cudaMemcpyHostToDevice);
     // Run on GPU, change dev_v and dev_scratch
     central2d_predict(
         v,
