@@ -564,6 +564,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
 extern "C"
 int central2d_run(central2d_t* sim, float tfinal)
 {
+    printf(">> Here!! \n")
     return central2d_xrun(sim->u, sim->v, sim->scratch,
                           sim->f, sim->g,
                           sim->nx, sim->ny, sim->ng,
