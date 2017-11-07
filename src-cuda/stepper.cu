@@ -493,10 +493,10 @@ int central2d_xrun(float* restrict u, float* restrict v,
         // Run on CPU, change u
         central2d_periodic(u, nx, ny, ng, nfield); // CPU
 
-        cudaMemcpy( dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice);
+        cudaMemcpy(dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice);
         // Run on GPU, change dev_cxy
-        speed(cxy, u, nx_all, ny_all, nx_all * ny_all); // GPU
-        cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost);
+        speed(dev_cxy, u, nx_all, ny_all, nx_all * ny_all); // GPU
+        cudaMemcpy(cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost);
         print_array(cxy, 2);
         float dt = cfl / fmaxf(cxy[0]/dx, cxy[1]/dy);
         if (t + 2*dt >= tfinal) {
