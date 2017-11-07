@@ -1,5 +1,5 @@
 extern "C" {
-#include "stepper.h"
+#include "stepper.cuh"
 #include "shallow2d.cuh"
 }
 #ifdef _OPENMP
