@@ -1,4 +1,4 @@
-SRC=src-c
+SRC=src-cuda
 PYTHON=python
 
 .PHONY: src-c/lshallow
