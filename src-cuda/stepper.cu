@@ -516,12 +516,12 @@ int central2d_xrun(float* restrict u, float* restrict v,
         float cxy[2] = {1.0e-15f, 1.0e-15f};
 
         // Run on CPU, change u
-        central2d_periodic(u, nx, ny, ng, nfield);
+        central2d_periodic(u, nx, ny, ng, nfield); // CPU
 
         cudaMemcpy( dev_u, u, N, cudaMemcpyHostToDevice);
         cudaMemcpy( dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice);
         // Run on GPU, change dev_cxy
-        speed(dev_cxy, dev_u, nx_all, ny_all, nx_all * ny_all);
+        speed(dev_cxy, dev_u, nx_all, ny_all, nx_all * ny_all); // GPU
         cudaMemcpy( cxy, dev_cxy, 2*sizeof(float), cudaMemcpyDeviceToHost);
 
         float dt = cfl / fmaxf(cxy[0]/dx, cxy[1]/dy);
@@ -544,9 +544,10 @@ int central2d_xrun(float* restrict u, float* restrict v,
                        dt, dx, dy);
         t += 2*dt;
         nstep += 2;
-    }
-    // It seems we only need u, need to confirm.
-    cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);  
+
+        // It seems we only need u, need to confirm. 
+        cudaMemcpy( u, dev_u, N, cudaMemcpyDeviceToHost);
+    }  
     cudaFree(dev_u);
     cudaFree(dev_v);
     cudaFree(dev_scratch);

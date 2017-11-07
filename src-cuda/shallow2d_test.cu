@@ -90,15 +90,25 @@ int main(int argc, char** argv){
 	// device copies of FU, GU, U
     float *dev_FU, *dev_GU, *dev_U, *dev_cxy;
     int size = ncell*3*sizeof(float);
-    gpuErrchk(cudaMalloc( (void**)&dev_FU, size ));
-    gpuErrchk(cudaMalloc( (void**)&dev_GU, size ));
-    gpuErrchk(cudaMalloc( (void**)&dev_U,  size ));
-    gpuErrchk(cudaMalloc( (void**)&dev_cxy, 2*sizeof(float) ));
+    // gpuErrchk(cudaMalloc( (void**)&dev_FU, size ));
+    // gpuErrchk(cudaMalloc( (void**)&dev_GU, size ));
+    // gpuErrchk(cudaMalloc( (void**)&dev_U,  size ));
+    // gpuErrchk(cudaMalloc( (void**)&dev_cxy, 2*sizeof(float) ));
 	// copy the reseted data to GPU
-	gpuErrchk(cudaMemcpy( dev_FU, FU, size, cudaMemcpyHostToDevice ));
-    gpuErrchk(cudaMemcpy( dev_GU, GU, size, cudaMemcpyHostToDevice ));
-    gpuErrchk(cudaMemcpy( dev_U,  U,  size, cudaMemcpyHostToDevice ));
-    gpuErrchk(cudaMemcpy( dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice ));
+	// gpuErrchk(cudaMemcpy( dev_FU, FU, size, cudaMemcpyHostToDevice ));
+    // gpuErrchk(cudaMemcpy( dev_GU, GU, size, cudaMemcpyHostToDevice ));
+    // gpuErrchk(cudaMemcpy( dev_U,  U,  size, cudaMemcpyHostToDevice ));
+    // gpuErrchk(cudaMemcpy( dev_cxy, cxy, 2*sizeof(float), cudaMemcpyHostToDevice ));
+
+    // CUDA Unified memory
+    cudaMallocManaged(&dev_FU, size);
+    cudaMallocManaged(&dev_GU, size);
+    cudaMallocManaged(&dev_U, size);
+    cudaMallocManaged(&dev_cxy, 2*sizeof(float));
+   	// Reset
+	for (i = 0; i < ncell * 3; i++) {
+    	dev_FU[i] = 1; dev_GU[i] = 1; dev_U[i] = 1;
+	} 
 
     // Time the GPU
 	cudaEventCreate(&start);
@@ -116,15 +126,17 @@ int main(int argc, char** argv){
 	cudaEventElapsedTime(&ms, start, stop);
 	printf("GPU: %f ms. \n",ms);
 
-	cudaMemcpy( FU, dev_FU, size, cudaMemcpyDeviceToHost );
-	cudaMemcpy( GU, dev_GU, size, cudaMemcpyDeviceToHost );
-	cudaMemcpy( U,  dev_U,  size, cudaMemcpyDeviceToHost );	
+	// cudaMemcpy( FU, dev_FU, size, cudaMemcpyDeviceToHost );
+	// cudaMemcpy( GU, dev_GU, size, cudaMemcpyDeviceToHost );
+	// cudaMemcpy( U,  dev_U,  size, cudaMemcpyDeviceToHost );	
 
 	printf("GPUassert: %s\n", cudaGetErrorString(cudaGetLastError()));
 
 	printf("Check correctness ");
 	for (i = 0; i < ncell * 3; i++)
-    	if (FU[i] != tFU[i] or GU[i] != tGU[i] or U[i] != tU[i])
+    	// if (FU[i] != tFU[i] or GU[i] != tGU[i] or U[i] != tU[i])
+    	// 	printf("Wrong! \n");
+    	if (dev_FU[i] != tFU[i] or dev_GU[i] != tGU[i] or dev_U[i] != tU[i])
     		printf("Wrong! \n");
    
 	printf("\n");
