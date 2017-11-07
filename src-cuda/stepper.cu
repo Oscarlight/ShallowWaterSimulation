@@ -512,7 +512,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
         nstep += 2;
         // print_array(u, nx_all * ny_all);
     } 
-    cudaFree(dev_cxy);
+    // cudaFree(dev_cxy);
     return nstep;
 }
 
