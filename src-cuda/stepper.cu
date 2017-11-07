@@ -312,7 +312,7 @@ void central2d_predict_wrapper(
 }
 
 // Corrector
-static
+__host__ static
 void central2d_correct_sd(float* restrict s,
                           float* restrict d,
                           const float* restrict ux,
@@ -336,7 +336,7 @@ void central2d_correct_sd(float* restrict s,
 
 
 // Corrector
-static
+__host__ static
 void central2d_correct(float* restrict v,
                        float* restrict scratch,
                        const float* restrict u,
@@ -438,7 +438,7 @@ void central2d_step(float* restrict u,
     }
     printf("Flag6 \n");
     cudaDeviceSynchronize();
-    // Run on CPU, change dev_v and dev_scratch
+    // Run on CPU, change v and scratch
     central2d_correct(v+io*(nx_all+1), scratch, u, f, g, dtcdx2, dtcdy2,
                       ng-io, nx+ng-io,
                       ng-io, ny+ng-io,
