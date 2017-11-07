@@ -48,15 +48,16 @@ central2d_t* central2d_init(float w, float h, int nx, int ny,
     int nc = nx_all * ny_all;
     int N  = nfield * nc;
     // sim->u  = (float*) malloc((4*N + 6*nx_all)* sizeof(float));
-    // sim->v  = sim->u +   N;
-    // sim->f  = sim->u + 2*N;
-    // sim->g  = sim->u + 3*N;
-    // sim->scratch = sim->u + 4*N;
-    cudaMallocManaged(&sim->u, N*sizeof(float));
-    cudaMallocManaged(&sim->v, N*sizeof(float));
-    cudaMallocManaged(&sim->f, N*sizeof(float));
-    cudaMallocManaged(&sim->g, N*sizeof(float));
-    cudaMallocManaged(&sim->scratch, 6*nx_all*sizeof(float));
+    cudaMallocManaged(&sim->u, (4*N + 6*nx_all)* sizeof(float));
+    sim->v  = sim->u +   N;
+    sim->f  = sim->u + 2*N;
+    sim->g  = sim->u + 3*N;
+    sim->scratch = sim->u + 4*N;
+    // cudaMallocManaged(&sim->u, N*sizeof(float));
+    // cudaMallocManaged(&sim->v, N*sizeof(float));
+    // cudaMallocManaged(&sim->f, N*sizeof(float));
+    // cudaMallocManaged(&sim->g, N*sizeof(float));
+    // cudaMallocManaged(&sim->scratch, 6*nx_all*sizeof(float));
     return sim;
 }
 
