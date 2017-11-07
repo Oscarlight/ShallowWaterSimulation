@@ -47,17 +47,11 @@ central2d_t* central2d_init(float w, float h, int nx, int ny,
     int ny_all = ny + 2*ng;
     int nc = nx_all * ny_all;
     int N  = nfield * nc;
-    // sim->u  = (float*) malloc((4*N + 6*nx_all)* sizeof(float));
     cudaMallocManaged(&sim->u, (4*N + 6*nx_all)* sizeof(float));
     sim->v  = sim->u +   N;
     sim->f  = sim->u + 2*N;
     sim->g  = sim->u + 3*N;
     sim->scratch = sim->u + 4*N;
-    // cudaMallocManaged(&sim->u, N*sizeof(float));
-    // cudaMallocManaged(&sim->v, N*sizeof(float));
-    // cudaMallocManaged(&sim->f, N*sizeof(float));
-    // cudaMallocManaged(&sim->g, N*sizeof(float));
-    // cudaMallocManaged(&sim->scratch, 6*nx_all*sizeof(float));
     return sim;
 }
 
@@ -484,8 +478,12 @@ int central2d_xrun(float* restrict u, float* restrict v,
     cudaMalloc( (void**)&dev_nx, sizeof(int) );
     cudaMalloc( (void**)&dev_ny, sizeof(int) );
 
+    // for speed function only
+    float *cxy;
+    cudaMallocManaged( (void**)&cxy, 2*sizeof(float));
     while (!done) {
-        float cxy[2] = {1.0e-15f, 1.0e-15f};
+        cxy[0] = 1.0e-15f;
+        cxy[1] = 1.0e-15f;
         // Run on CPU, change u
         central2d_periodic(u, nx, ny, ng, nfield); // CPU
         // Run on GPU, change dev_cxy
@@ -522,5 +520,3 @@ int central2d_run(central2d_t* sim, float tfinal)
                           sim->nfield, sim->flux, sim->speed,
                           tfinal, sim->dx, sim->dy, sim->cfl);
 }
-
-
