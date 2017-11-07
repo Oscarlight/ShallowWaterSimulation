@@ -512,6 +512,7 @@ int central2d_xrun(float* restrict u, float* restrict v,
     cudaMalloc( (void**)&dev_ny, sizeof(int) );
 
     while (!done) {
+        printf("Enter");
         float cxy[2] = {1.0e-15f, 1.0e-15f};
 
         // Run on CPU, change u
